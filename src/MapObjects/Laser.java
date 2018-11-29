@@ -58,10 +58,8 @@ public class Laser {
 			if(this.delay().framesPassed() >= this.delay().dur()) {
 				this.delay().setDone(true);
 				MapItems.setGhostLaserSize(MapItems.ghostLaserSize() - 1);
-				for(int i = this.ghostIndex(); i < MapItems.ghostLaserSize(); i++) {
-					MapItems.ghostLasers()[i] = MapItems.ghostLasers()[i + 1];
-					MapItems.lasers()[i + 1].setGhostIndex(MapItems.lasers()[i + 1].ghostIndex() - 1);
-				}
+				MapItems.lasers()[MapItems.laserSize() - 1].setGhostIndex(this.ghostIndex());
+				MapItems.ghostLasers()[this.ghostIndex()] = MapItems.ghostLasers()[MapItems.ghostLaserSize()];
 				MapItems.ghostLasers()[MapItems.ghostLaserSize()] = null;
 			}
 			else {
@@ -69,17 +67,27 @@ public class Laser {
 			}
 		}
 		
-		if(removed && !this.lifeSpan().done()) {
+		if(removed && !this.lifeSpan().done() && this.lifeSpan().dur() != 0) {
 			if(this.lifeSpan().framesPassed() >= this.lifeSpan().dur()) {
 				MapItems.setLaserSize(MapItems.laserSize() - 1);
-				for(int i = this.laserIndex(); i < MapItems.laserSize(); i++) {
-					MapItems.lasers()[i] = MapItems.lasers()[i + 1];
-					MapItems.lasers()[i].setLaserIndex(MapItems.lasers()[i].laserIndex() - 1);
-				}
+				MapItems.lasers()[MapItems.laserSize()].setLaserIndex(this.laserIndex()); 
+				MapItems.lasers()[this.laserIndex()] = MapItems.lasers()[MapItems.laserSize()];
 				MapItems.lasers()[MapItems.laserSize()] = null;
 			}
 			else {
 				this.lifeSpan().increase();
+			}
+		}
+		
+		if(this.death().done()) {
+			if(this.death().framesPassed() >= this.death().dur()) {
+				MapItems.setLaserSize(MapItems.laserSize() - 1);
+				MapItems.lasers()[MapItems.laserSize()].setLaserIndex(this.laserIndex()); 
+				MapItems.lasers()[this.laserIndex()] = MapItems.lasers()[MapItems.laserSize()];
+				MapItems.lasers()[MapItems.laserSize()] = null;
+			}
+			else {
+				this.death().setFramesPassed(this.death().framesPassed() + 1);
 			}
 		}
 	}

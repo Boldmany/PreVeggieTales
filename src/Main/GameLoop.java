@@ -10,9 +10,9 @@ public class GameLoop implements EventHandler<ActionEvent> {
 	private static Color pink = Color.rgb(252,31,109);
 	private static Color warning = Color.rgb(93,35,71); 
 	public Laser thing1 = new Laser(new Vector(0, 100), 0, 50, 1, new Delay(50), true);
-	public Laser thing2 = new Laser(new Vector(100, 650), 50, 0, 2, new Delay(100), true);
+	public Laser thing2 = new Laser(new Vector(100, 650), 50, 0, 2, new Delay(150), true);
 	public Laser thing3 = new Laser(new Vector(1000, 500), 0, 50, 3, new Delay(150), true);
-	public Laser thing4 = new Laser(new Vector(550, 0), 50, 0, 4, new Delay(200), true);
+	public Laser thing4 = new Laser(new Vector(550, 0), 50, 0, 4, new Delay(100), true);
 	
 	public void handle(ActionEvent ev) {
 		thing1.vec().setX(5);
@@ -32,9 +32,9 @@ public class GameLoop implements EventHandler<ActionEvent> {
 		Main.gc().setFill(pink);
 		for(int i = 0; i < MapItems.laserSize(); i++) {
 			int startSize = MapItems.laserSize();
-			if(!MapItems.lasers()[i].delay().done() || (!MapItems.lasers()[i].lifeSpan().done() && MapItems.lasers()[i].lifeSpan().dur() != 0)) {
-				MapItems.lasers()[i].delayCheck();
-			}
+			
+			MapItems.lasers()[i].delayCheck();
+			
 			if(MapItems.laserSize() == startSize) {
 				if(MapItems.lasers()[i].delay().done()) {
 					Main.gc().fillRect(MapItems.lasers()[i].coord().x(), MapItems.lasers()[i].coord().y(),
