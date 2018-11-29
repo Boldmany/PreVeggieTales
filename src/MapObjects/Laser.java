@@ -9,7 +9,10 @@ public class Laser {
 	private int dir; 
 	private Delay delay;
 	private Delay lifeSpan = new Delay(0);
+	private Delay death = new Delay(5);
+	private int laserIndex;
 	private int ghostIndex;
+	
 	
 	public Laser(Vector coord, double width, double height, int dir, Delay delay, boolean real) {
 		this.setCoord(coord);
@@ -19,11 +22,13 @@ public class Laser {
 		this.setDelay(delay);
 		
 		if(real) {
-			MapItems.lasers().add(this);
+			this.setLaserIndex(MapItems.laserSize());
+			MapItems.lasers()[this.laserIndex()] = this;
+			MapItems.setLaserSize(MapItems.laserSize() + 1);
 			if(this.delay().dur() != 0) {
 				this.setGhostIndex(MapItems.ghostLaserSize());
-				MapItems.setGhostLaserSize(MapItems.ghostLaserSize() + 1);
 				ghost(new Vector(coord.x(),coord.y()), width, height, dir, new Delay(0));
+				MapItems.setGhostLaserSize(MapItems.ghostLaserSize() + 1);
 			}
 		}
 	}
@@ -44,21 +49,20 @@ public class Laser {
 		else {
 			warning.setHeight(Main.canvas().getHeight());
 		}
-		MapItems.ghostLasers().add(warning);
+		MapItems.ghostLasers()[MapItems.ghostLaserSize()] = warning;
 	}
 	
 	public void delayCheck() {
 		boolean removed = this.delay().done();
-		
 		if(!this.delay().done()) {
 			if(this.delay().framesPassed() >= this.delay().dur()) {
 				this.delay().setDone(true);
-				MapItems.ghostLasers().remove(this.ghostIndex());
-				for(int i = this.ghostIndex() + 1; i < MapItems.lasers().size(); i++) {
-					if(MapItems.lasers().get(i).delay().dur() != 0) {
-						MapItems.lasers().get(i).setGhostIndex(MapItems.lasers().get(i).ghostIndex() - 1);	
-					}
+				MapItems.setGhostLaserSize(MapItems.ghostLaserSize() - 1);
+				for(int i = this.ghostIndex(); i < MapItems.ghostLaserSize(); i++) {
+					MapItems.ghostLasers()[i] = MapItems.ghostLasers()[i + 1];
+					MapItems.lasers()[i + 1].setGhostIndex(MapItems.lasers()[i + 1].ghostIndex() - 1);
 				}
+				MapItems.ghostLasers()[MapItems.ghostLaserSize()] = null;
 			}
 			else {
 				this.delay().increase();
@@ -67,7 +71,12 @@ public class Laser {
 		
 		if(removed && !this.lifeSpan().done()) {
 			if(this.lifeSpan().framesPassed() >= this.lifeSpan().dur()) {
-				MapItems.lasers().remove(MapItems.lasers().indexOf(this));
+				MapItems.setLaserSize(MapItems.laserSize() - 1);
+				for(int i = this.laserIndex(); i < MapItems.laserSize(); i++) {
+					MapItems.lasers()[i] = MapItems.lasers()[i + 1];
+					MapItems.lasers()[i].setLaserIndex(MapItems.lasers()[i].laserIndex() - 1);
+				}
+				MapItems.lasers()[MapItems.laserSize()] = null;
 			}
 			else {
 				this.lifeSpan().increase();
@@ -161,5 +170,21 @@ public class Laser {
 
 	public void setVec(Vector vec) {
 		this.vec = vec;
+	}
+
+	public Delay death() {
+		return death;
+	}
+
+	public void setDeath(Delay death) {
+		this.death = death;
+	}
+
+	public int laserIndex() {
+		return laserIndex;
+	}
+
+	public void setLaserIndex(int laserIndex) {
+		this.laserIndex = laserIndex;
 	}
 }
