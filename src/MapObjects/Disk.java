@@ -1,6 +1,6 @@
 package MapObjects;
 
-import Main.Vector;
+import Main.*;
 
 public class Disk {
 	private Vector coord;

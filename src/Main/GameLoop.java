@@ -1,9 +1,12 @@
 package Main;
 
-import MapObjects.*;
+import MapObjects.Laser;
+import MapObjects.MapItems;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import javafx.scene.transform.Rotate;
 
 public class GameLoop implements EventHandler<ActionEvent> {
 	
@@ -13,6 +16,9 @@ public class GameLoop implements EventHandler<ActionEvent> {
 	public Laser thing2 = new Laser(new Vector(100, 650), 50, 0, 2, new Delay(150), true);
 	public Laser thing3 = new Laser(new Vector(1000, 500), 0, 50, 3, new Delay(150), true);
 	public Laser thing4 = new Laser(new Vector(550, 0), 50, 0, 4, new Delay(100), true);
+	public Image img = new Image("file:resources/pineapple.png");
+	public Rotate rotate = new Rotate(-45,100,200);
+	
 	
 	public void handle(ActionEvent ev) {
 		thing1.vec().setX(5);
@@ -46,5 +52,9 @@ public class GameLoop implements EventHandler<ActionEvent> {
 				i -= 1;
 			}
 		}
+		
+		Main.gc().drawImage(img, 100, 200);
+		
+		Main.gc().drawImage(img, 100, 200);
 	}
 }
