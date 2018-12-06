@@ -2,6 +2,7 @@ package MapObjects;
 import Main.*;
 
 public class Laser {
+	
 	private Vector coord;
 	private Vector vec = new Vector(0,0);
 	private double width;
@@ -27,34 +28,37 @@ public class Laser {
 			MapItems.setLaserSize(MapItems.laserSize() + 1);
 			if(this.delay().dur() != 0) {
 				this.setGhostIndex(MapItems.ghostLaserSize());
-				ghost(new Vector(coord.x(),coord.y()), width, height, dir, new Delay(0));
+				ghost(new Vector(coord.x(),coord.y()), width, height, dir);
 				MapItems.setGhostLaserSize(MapItems.ghostLaserSize() + 1);
 			}
 		}
 	}
 
-	public void ghost(Vector coord, double width, double height, int dir, Delay delay) {
-		Laser warning = new Laser(coord, width, height, dir, delay, false);
+	public void ghost(Vector coord, double width, double height, int dir) {
+		Laser warning = new Laser(coord, width, height, dir, new Delay(0), false);
 		if(dir == 1) {
-			warning.setWidth(Main.canvas().getWidth());
+			warning.setHeight(Main.canvas().getHeight());
 		}
 		else if(dir == 3) {
-			warning.coord().setX(0);
-			warning.setWidth(Main.canvas().getWidth());
-		}
-		else if(dir == 2) {
 			warning.coord().setY(0);
 			warning.setHeight(Main.canvas().getHeight());
 		}
+		else if(dir == 2) {
+			warning.coord().setX(0);
+			warning.setWidth(Main.canvas().getWidth());
+		}
 		else {
-			warning.setHeight(Main.canvas().getHeight());
+			warning.setWidth(Main.canvas().getWidth());
 		}
 		MapItems.ghostLasers()[MapItems.ghostLaserSize()] = warning;
 	}
 	
 	public void delayCheck() {
-		boolean removed = this.delay().done();
-		if(!this.delay().done()) {
+		
+		if(this.delay().done()) {
+			this.move();
+		}
+		else {
 			if(this.delay().framesPassed() >= this.delay().dur()) {
 				this.delay().setDone(true);
 				MapItems.setGhostLaserSize(MapItems.ghostLaserSize() - 1);
@@ -67,7 +71,7 @@ public class Laser {
 			}
 		}
 		
-		if(removed && !this.lifeSpan().done() && this.lifeSpan().dur() != 0) {
+		if(this.delay().done() && !this.lifeSpan().done() && this.lifeSpan().dur() != 0) {
 			if(this.lifeSpan().framesPassed() >= this.lifeSpan().dur()) {
 				MapItems.setLaserSize(MapItems.laserSize() - 1);
 				MapItems.lasers()[MapItems.laserSize()].setLaserIndex(this.laserIndex()); 
@@ -87,31 +91,31 @@ public class Laser {
 				MapItems.lasers()[MapItems.laserSize()] = null;
 			}
 			else {
-				this.death().setFramesPassed(this.death().framesPassed() + 1);
+				this.death().increase();
 			}
 		}
 	}
 	
 	
-	public void Move() {
+	public void move() {
 		Collision.laserToWall(this);
 		if(this.dir() == 1) {
-			this.setWidth(this.width() + this.vec().x());
-			this.coord().setY(this.coord().y() + this.vec().y());
-		}
-		else if(this.dir() == 2) {
-			this.coord().setY(this.coord().y() - this.vec().y());
 			this.setHeight(this.height() + this.vec().y());
 			this.coord().setX(this.coord().x() + this.vec().x());
 		}
-		else if(this.dir() == 3) {
+		else if(this.dir() == 2) {
 			this.coord().setX(this.coord().x() - this.vec().x());
 			this.setWidth(this.width() + this.vec().x());
 			this.coord().setY(this.coord().y() + this.vec().y());
 		}
-		else {
+		else if(this.dir() == 3) {
+			this.coord().setY(this.coord().y() - this.vec().y());
 			this.setHeight(this.height() + this.vec().y());
 			this.coord().setX(this.coord().x() + this.vec().x());
+		}
+		else {
+			this.setWidth(this.width() + this.vec().x());
+			this.coord().setY(this.coord().y() + this.vec().y());
 		}
 	}
 	
