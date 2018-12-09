@@ -11,11 +11,13 @@ public class GameLoop implements EventHandler<ActionEvent> {
 	
 	private static Color pink = Color.rgb(252,31,109);
 	private static Color warning = Color.rgb(93,35,71); 
-	public Laser thing1 = new Laser(new Vector(550, 0), 50, 0, 1, new Delay(50), true);
-	public Laser thing2 = new Laser(new Vector(1000, 500), 0, 50, 2, new Delay(150), true);
-	public Laser thing3 = new Laser(new Vector(100, 650), 50, 0, 3, new Delay(150), true);
-	public Laser thing4 = new Laser(new Vector(0, 100), 0,50, 4, new Delay(100), true);
-	public Disk thing5 = new Disk(new Vector(200, 300), 50, new Delay(10), 0, true);
+	public Laser thing1 = new Laser(new Vector(550, 0), 50, 0, 1, new Delay(50));
+	public Laser thing2 = new Laser(new Vector(1000, 500), 0, 50, 2, new Delay(150));
+	public Laser thing3 = new Laser(new Vector(100, 650), 50, 0, 3, new Delay(150));
+	public Laser thing4 = new Laser(new Vector(0, 100), 0,50, 4, new Delay(100));
+	public Disk thing5 = new Disk(new Vector(200, 300), 50, new Delay(30), 1, 0.7);
+	public Disk thing6 = new Disk(new Vector(930, 300), 30, new Delay(0), 2, 0);
+	public Disk thing7 = new Disk(new Vector(300, 30), 30, new Delay(30), 2, 0.7);
 	public Image img = new Image("file:resources/pineapple.png");
 	public Pineapple man = new Pineapple(new Vector(500,300));
 	
@@ -25,6 +27,9 @@ public class GameLoop implements EventHandler<ActionEvent> {
 		thing2.vec().setX(9);
 		thing3.vec().setY(9);
 		thing4.vec().setX(9);
+		thing1.lifeSpan().setDur(10);
+		thing6.maxSpeed().setX(0);
+		thing7.maxSpeed().setY(0);
 		Main.gc().clearRect(0, 0, Main.canvas().getWidth(), Main.canvas().getHeight());
 		Main.gc().setFill(Color.BLACK);
 		Main.gc().fillRect(0, 0, Main.canvas().getWidth(), Main.canvas().getHeight());
@@ -52,6 +57,21 @@ public class GameLoop implements EventHandler<ActionEvent> {
 				}
 			}
 			if(MapItems.laserSize() < startSize) {
+				i -= 1;
+			}
+		}
+		for(int i = 0; i < MapItems.diskSize(); i++) {
+			int startSize = MapItems.diskSize();
+			
+			MapItems.disks()[i].delayCheck();
+			
+			if(MapItems.diskSize() == startSize) {
+				if(MapItems.disks()[i].delay().done()) {
+					Main.gc().fillOval(MapItems.disks()[i].coord().x() - MapItems.disks()[i].currentRadius(), MapItems.disks()[i].coord().y() - MapItems.disks()[i].currentRadius(),
+							MapItems.disks()[i].currentRadius() * 2, MapItems.disks()[i].currentRadius() * 2);
+				}
+			}
+			if(MapItems.diskSize() < startSize) {
 				i -= 1;
 			}
 		}
