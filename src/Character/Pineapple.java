@@ -12,7 +12,7 @@ public class Pineapple {
 	private Vector vec = new Vector(0,0);
 	private Image img = new Image("file:resources/pineapple.png");
 	private Rotate rotate = new Rotate(0,0,0);
-	private int dir = 0;
+	private Vector dir = new Vector(0,0);
 	
 	public Pineapple(Vector coord) {
 		this.setCoord(coord);
@@ -24,33 +24,39 @@ public class Pineapple {
 		MapItems.setPlayerSize(MapItems.playerSize() + 1);
 	}
 	
-	public void rotation() {
+	public void move() {
 		rotate.setPivotX(this.coord().x());
 		rotate.setPivotY(this.coord().y());
-		if(this.dir() == 1) {
+		if(this.dir().x() == 0 && this.dir().y() == 0) {
 			rotate.setAngle(0);
 		}
-		else if(this.dir() == 2) {
+		else if(this.dir().x() == 0 && this.dir().y() == -1) {
+			rotate.setAngle(0);
+		}
+		else if(this.dir().x() == 1 && this.dir().y() == -1) {
 			rotate.setAngle(45);
 		}
-		else if(this.dir() == 3) {
+		else if(this.dir().x() == 1 && this.dir().y() == 0) {
 			rotate.setAngle(90);
 		}
-		else if(this.dir() == 4) {
+		else if(this.dir().x() == 1 && this.dir().y() == 1) {
 			rotate.setAngle(135);
 		}
-		else if(this.dir() == 5) {
+		else if(this.dir().x() == 0 && this.dir().y() == 1) {
 			rotate.setAngle(180);
 		}
-		else if(this.dir() == 6) {
-			rotate.setAngle(-135);
+		else if(this.dir().x() == -1 && this.dir().y() == 1) {
+			rotate.setAngle(225);
 		}
-		else if(this.dir() == 7) {
-			rotate.setAngle(-90);
+		else if(this.dir().x() == -1 && this.dir().y() == 0) {
+			rotate.setAngle(270);
 		}
 		else {
-			rotate.setAngle(-45);
+			rotate.setAngle(315);
 		}
+		
+		this.coord().setY(this.coord().y() + (3 * this.dir().y()));
+		this.coord().setX(this.coord().x() + (3 * this.dir().x()));
 	}
 
 	
@@ -85,14 +91,6 @@ public class Pineapple {
 	public void setRotate(Rotate rotate) {
 		this.rotate = rotate;
 	}
-
-	public int dir() {
-		return dir;
-	}
-
-	public void setDir(int dir) {
-		this.dir = dir;
-	}
 	
 	public Vector coord() {
 		return coord;
@@ -100,5 +98,13 @@ public class Pineapple {
 
 	public void setCoord(Vector coord) {
 		this.coord = coord;
+	}
+
+	public Vector dir() {
+		return dir;
+	}
+
+	public void setDir(Vector dir) {
+		this.dir = dir;
 	}
 }

@@ -5,16 +5,20 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 public class OnKeyPressed implements EventHandler<KeyEvent>{
-	public int i = 0;
-	@Override
+
 	public void handle(KeyEvent key) {
 		
 		if(key.getCode() == KeyCode.W) {
-			i = (i + 1) % 8;
-			MapItems.players()[0].setDir(i);
-			MapItems.players()[0].rotation();
+			MapItems.players()[0].dir().setY(-1);
 		}
-		
+		if(key.getCode() == KeyCode.S) {
+			MapItems.players()[0].dir().setY(1);
+		}
+		if(key.getCode() == KeyCode.D) {
+			MapItems.players()[0].dir().setX(1);
+		}
+		if(key.getCode() == KeyCode.A) {
+			MapItems.players()[0].dir().setX(-1);
+		}
 	}
-
 }

@@ -13,15 +13,14 @@ public class Disk {
 	private Vector dir = new Vector(1,1);
 	private Delay delay;
 	private Delay lifeSpan = new Delay(0);
-	private int function;
+	private Delay death = new Delay(0);
 	private int diskIndex;
 	private int ghostIndex;
 	
-	public Disk(Vector coord, double finalRadius, Delay delay, int function, double radiusChange) {
+	public Disk(Vector coord, double finalRadius, Delay delay, double radiusChange) {
 		this.setCoord(coord);
 		this.setFinalRadius(finalRadius);
 		this.setDelay(delay);
-		this.setFunction(function);
 		this.setRadiusChange(radiusChange);
 		
 		if(this.vec().x() < 0) {
@@ -50,38 +49,33 @@ public class Disk {
 	public void delayCheck() {
 		
 		if(this.delay().done()) {
-			if(this.function() == 1) {
-				this.changeRadius();
-				if(this.currentRadius() == this.finalRadius()) {
-					this.setRadiusChange(this.radiusChange() * -2);
+			this.changeRadius();
+			if(this.delay.dur() != 0) {
+				if(this.currentRadius() == this.finalRadius() && this.radiusChange() != 0) {
+					if(this.lifeSpan().dur() == 0 && this.vec().x() == 0 && this.vec().y() == 0) {
+						this.setRadiusChange(this.radiusChange() * -2);
+					}
+					else {
+						this.setRadiusChange(0);
+					}
 					MapItems.setGhostDiskSize(MapItems.ghostDiskSize() - 1);
 					MapItems.disks()[MapItems.diskSize() - 1].setGhostIndex(this.ghostIndex());
 					MapItems.ghostDisks()[this.ghostIndex()] = MapItems.ghostDisks()[MapItems.ghostDiskSize()];
 					MapItems.ghostDisks()[MapItems.ghostDiskSize()] = null;
 				}
 			}
+			else if(this.radiusChange() == 0 && this.currentRadius() != this.finalRadius()){
+				this.setCurrentRadius(this.finalRadius());
+			}
 			
-			else if(this.function() == 2) {
-				if(this.delay.dur() != 0) {
-					this.changeRadius();
-				}
-				else {
-					this.setCurrentRadius(this.finalRadius());
-				}
-				if(this.currentRadius() == this.finalRadius()) {
-					this.move();
-				}
+			if(this.currentRadius() == this.finalRadius()) {
+				this.move();
 			}
 		}
+		
 		else {
 			if(this.delay().framesPassed() >= this.delay().dur()) {
 				this.delay().setDone(true);
-				if(this.function() == 2 && this.delay().dur() != 0) {
-					MapItems.setGhostDiskSize(MapItems.ghostDiskSize() - 1);
-					MapItems.disks()[MapItems.diskSize() - 1].setGhostIndex(this.ghostIndex());
-					MapItems.ghostDisks()[this.ghostIndex()] = MapItems.ghostDisks()[MapItems.ghostDiskSize()];
-					MapItems.ghostDisks()[MapItems.ghostDiskSize()] = null;
-				}
 			}
 			else {
 				this.delay().increase();
@@ -90,14 +84,20 @@ public class Disk {
 		
 		if(this.delay().done() && this.lifeSpan().dur() != 0) {
 			if(this.lifeSpan().framesPassed() >= this.lifeSpan().dur()) {
-				MapItems.setDiskSize(MapItems.diskSize() - 1);
-				MapItems.disks()[MapItems.diskSize()].setDiskIndex(this.diskIndex()); 
-				MapItems.disks()[this.diskIndex()] = MapItems.disks()[MapItems.diskSize()];
-				MapItems.disks()[MapItems.diskSize()] = null;
+				//make math
+				this.setRadiusChange(-1.4);
 			}
-			else {
-				this.lifeSpan().increase();
+			else if (this.lifeSpan().framesPassed() < this.lifeSpan().dur()){
+				if(this.currentRadius() == this.finalRadius()) {
+					this.lifeSpan().increase();
+				}
 			}
+		}
+		if(this.death().done()) {
+			MapItems.setDiskSize(MapItems.diskSize() - 1);
+			MapItems.disks()[MapItems.diskSize()].setDiskIndex(this.diskIndex()); 
+			MapItems.disks()[this.diskIndex()] = MapItems.disks()[MapItems.diskSize()];
+			MapItems.disks()[MapItems.diskSize()] = null;
 		}
 	}
 	
@@ -106,20 +106,23 @@ public class Disk {
 			this.setCurrentRadius(this.currentRadius() + this.radiusChange());
 			if(this.currentRadius() > this.finalRadius()) {
 				this.setCurrentRadius(this.finalRadius());
-				
 			}
 		}
 		
-		if(this.currentRadius() > 0 && this.radiusChange() < 0) {
+		else if(this.currentRadius() > 0 && this.radiusChange() < 0) {
 			this.setCurrentRadius(this.currentRadius() + this.radiusChange());
 			if(this.currentRadius() < 0) {
 				this.setCurrentRadius(0);
+				this.death().setDone(true);
 			}
 		}
 	}
 	
 	public void move() {
 		double change = 0.5;
+		
+		Collision.diskToWall(this);
+		
 		this.coord().setX(this.coord().x() + this.vec().x());
 		this.coord().setY(this.coord().y() + this.vec().y());
 		
@@ -202,13 +205,6 @@ public class Disk {
 		this.finalRadius = finalRadius;
 	}
 
-	public int function() {
-		return function;
-	}
-
-	public void setFunction(int function) {
-		this.function = function;
-	}
 	public double radiusChange() {
 		return radiusChange;
 	}
@@ -230,5 +226,13 @@ public class Disk {
 
 	public void setMaxSpeed(Vector maxSpeed) {
 		this.maxSpeed = maxSpeed;
+	}
+
+	public Delay death() {
+		return death;
+	}
+
+	public void setDeath(Delay death) {
+		this.death = death;
 	}
 }

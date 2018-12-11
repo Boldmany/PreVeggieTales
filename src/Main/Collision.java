@@ -1,6 +1,6 @@
 package Main;
 
-import MapObjects.Laser;
+import MapObjects.*;
 
 public class Collision {
 	
@@ -10,9 +10,7 @@ public class Collision {
 				if(laser.lifeSpan().dur() == 0) {
 					laser.death().setDone(true);
 				}
-				else {
-					MapItems.lasers()[laser.laserIndex()].vec().setX(0);
-				}
+				laser.vec().setY(0);
 			}
 			
 		}
@@ -21,9 +19,7 @@ public class Collision {
 				if(laser.lifeSpan().dur() == 0) {
 					laser.death().setDone(true);
 				}
-				else {
-					MapItems.lasers()[laser.laserIndex()].vec().setX(0);
-				}
+				laser.vec().setX(0);
 			}
 		}
 		else if(laser.dir() == 3) {
@@ -31,9 +27,7 @@ public class Collision {
 				if(laser.lifeSpan().dur() == 0) {
 					laser.death().setDone(true);
 				}
-				else {
-					MapItems.lasers()[laser.laserIndex()].vec().setX(0);
-				}
+				laser.vec().setY(0);
 			}
 		}
 		else if (laser.dir() == 4){
@@ -41,8 +35,33 @@ public class Collision {
 				if(laser.lifeSpan().dur() == 0) {
 					laser.death().setDone(true);
 				}
-				else {
-					MapItems.lasers()[laser.laserIndex()].vec().setX(0);
+				laser.vec().setX(0);
+			}
+		}
+	}
+	
+	public static void diskToWall(Disk disk) {
+		if(disk.maxSpeed().x() != 0) {
+			if(disk.dir().y() == 1) {
+				if(disk.coord().y() - disk.currentRadius() >= Main.canvas().getHeight()) {
+					disk.death().setDone(true);
+				}
+			}
+			else {
+				if(disk.coord().y() + disk.currentRadius() < 0) {
+					disk.death().setDone(true);
+				}
+			}
+		}
+		if(disk.maxSpeed().y() != 0) {
+			if(disk.dir().x() == 1) {
+				if(disk.coord().x() - disk.currentRadius() >= Main.canvas().getWidth()) {
+					disk.death().setDone(true);
+				}
+			}
+			else {
+				if(disk.coord().x() + disk.currentRadius() < 0) {
+					disk.death().setDone(true);
 				}
 			}
 		}

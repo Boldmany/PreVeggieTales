@@ -15,21 +15,25 @@ public class GameLoop implements EventHandler<ActionEvent> {
 	public Laser thing2 = new Laser(new Vector(1000, 500), 0, 50, 2, new Delay(150));
 	public Laser thing3 = new Laser(new Vector(100, 650), 50, 0, 3, new Delay(150));
 	public Laser thing4 = new Laser(new Vector(0, 100), 0,50, 4, new Delay(100));
-	public Disk thing5 = new Disk(new Vector(200, 300), 50, new Delay(30), 1, 0.7);
-	public Disk thing6 = new Disk(new Vector(930, 300), 30, new Delay(0), 2, 0);
-	public Disk thing7 = new Disk(new Vector(300, 30), 30, new Delay(30), 2, 0.7);
+	public Disk thing5 = new Disk(new Vector(200, 300), 50, new Delay(30), 0.7);
+	public Disk thing6 = new Disk(new Vector(930, 300), 30, new Delay(0), 0.3);
+	public Disk thing7 = new Disk(new Vector(300, 30), 30, new Delay(30), 1);
 	public Image img = new Image("file:resources/pineapple.png");
 	public Pineapple man = new Pineapple(new Vector(500,300));
+	public Level l = new Level("E:\\\\Javashit/PreVeggieTales/resources/autism.wav");
 	
 	
 	public void handle(ActionEvent ev) {
-		thing1.vec().setY(5);
+		thing1.vec().setY(50);
 		thing2.vec().setX(9);
 		thing3.vec().setY(9);
 		thing4.vec().setX(9);
-		thing1.lifeSpan().setDur(10);
+		thing5.lifeSpan().setDur(100);
+		thing5.vec().setX(0);
+		thing5.vec().setY(0);
 		thing6.maxSpeed().setX(0);
 		thing7.maxSpeed().setY(0);
+		thing7.lifeSpan().setDur(100);
 		Main.gc().clearRect(0, 0, Main.canvas().getWidth(), Main.canvas().getHeight());
 		Main.gc().setFill(Color.BLACK);
 		Main.gc().fillRect(0, 0, Main.canvas().getWidth(), Main.canvas().getHeight());
@@ -82,6 +86,7 @@ public class GameLoop implements EventHandler<ActionEvent> {
 					MapItems.players()[i].rotate().getMyy(), MapItems.players()[i].rotate().getTx(), MapItems.players()[i].rotate().getTy());
 			Main.gc().drawImage(MapItems.players()[i].img(), MapItems.players()[i].coord().x() - 13, MapItems.players()[i].coord().y() - 25);
 			Main.gc().restore();
+			MapItems.players()[i].move();
 		}
 	}
 }

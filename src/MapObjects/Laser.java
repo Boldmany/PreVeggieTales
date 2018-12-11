@@ -103,7 +103,9 @@ public class Laser {
 	
 	
 	public void move() {
+		
 		Collision.laserToWall(this);
+		
 		if(this.dir() == 1) {
 			this.setHeight(this.height() + this.vec().y());
 			this.coord().setX(this.coord().x() + this.vec().x());
