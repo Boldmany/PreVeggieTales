@@ -20,5 +20,8 @@ public class OnKeyPressed implements EventHandler<KeyEvent>{
 		if(key.getCode() == KeyCode.A) {
 			MapItems.players()[0].dir().setX(-1);
 		}
+		if(key.getCode() == KeyCode.SPACE && MapItems.players()[0].cooldown().done()) {
+			MapItems.players()[0].dash().setDone(false);
+		}
 	}
 }

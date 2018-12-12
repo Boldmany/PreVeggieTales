@@ -1,7 +1,6 @@
 package Character;
 
-import Main.MapItems;
-import Main.Vector;
+import Main.*;
 import javafx.scene.image.Image;
 import javafx.scene.transform.Rotate;
 
@@ -13,6 +12,9 @@ public class Pineapple {
 	private Image img = new Image("file:resources/pineapple.png");
 	private Rotate rotate = new Rotate(0,0,0);
 	private Vector dir = new Vector(0,0);
+	private Delay dash = new Delay(3);
+	private Delay cooldown = new Delay(20);
+	private double speed;
 	
 	public Pineapple(Vector coord) {
 		this.setCoord(coord);
@@ -25,40 +27,79 @@ public class Pineapple {
 	}
 	
 	public void move() {
-		rotate.setPivotX(this.coord().x());
-		rotate.setPivotY(this.coord().y());
-		if(this.dir().x() == 0 && this.dir().y() == 0) {
-			rotate.setAngle(0);
-		}
-		else if(this.dir().x() == 0 && this.dir().y() == -1) {
-			rotate.setAngle(0);
-		}
-		else if(this.dir().x() == 1 && this.dir().y() == -1) {
-			rotate.setAngle(45);
+		
+		this.delayCheck();
+		boolean angled = false;
+		int degree = 0;
+		
+		if(this.dir().x() == 1 && this.dir().y() == -1) {
+			degree = 45;
+			angled = true;
 		}
 		else if(this.dir().x() == 1 && this.dir().y() == 0) {
-			rotate.setAngle(90);
+			degree = 90;
 		}
 		else if(this.dir().x() == 1 && this.dir().y() == 1) {
-			rotate.setAngle(135);
+			degree = 135;
+			angled = true;
 		}
 		else if(this.dir().x() == 0 && this.dir().y() == 1) {
-			rotate.setAngle(180);
+			degree = 180;
 		}
 		else if(this.dir().x() == -1 && this.dir().y() == 1) {
-			rotate.setAngle(225);
+			degree = 225;
+			angled = true;
 		}
 		else if(this.dir().x() == -1 && this.dir().y() == 0) {
-			rotate.setAngle(270);
+			degree = 270;
 		}
-		else {
-			rotate.setAngle(315);
+		else if(this.dir().x() == -1 && this.dir().y() == -1){
+			degree = 315;
+			angled = true;
 		}
 		
-		this.coord().setY(this.coord().y() + (3 * this.dir().y()));
-		this.coord().setX(this.coord().x() + (3 * this.dir().x()));
+		if(!this.dash().done()) {
+			this.setSpeed(30);
+		}
+		else {
+			this.setSpeed(3);
+		}
+		if(angled) {
+			this.setSpeed(this.speed() * Math.cos(Math.toRadians(45)));
+		}
+		
+		this.coord().setY(this.coord().y() + (this.speed() * this.dir().y()));
+		this.coord().setX(this.coord().x() + (this.speed() * this.dir().x()));
+		rotate.setPivotX(this.coord().x());
+		rotate.setPivotY(this.coord().y());
+		rotate.setAngle(degree);
 	}
 
+	public void delayCheck() {
+		if(this.dash().done()) {
+			this.setSpeed(3);
+			this.dash().setFramesPassed(0);
+			
+			if(!this.cooldown().done()) {
+				if(this.cooldown().framesPassed() >= this.cooldown().dur()) {
+					this.cooldown().setDone(true);
+					this.cooldown().setFramesPassed(0);
+				}
+				else {
+					this.cooldown().increase();
+				}
+			}
+		}
+		else {
+			if(this.dash().framesPassed() >= this.dash().dur()) {
+				this.dash().setDone(true);
+				this.cooldown().setDone(false);
+			}
+			else {
+				this.dash().increase();
+			}
+		}
+	}
 	
 	public double radius() {
 		return radius;
@@ -106,5 +147,29 @@ public class Pineapple {
 
 	public void setDir(Vector dir) {
 		this.dir = dir;
+	}
+
+	public double speed() {
+		return speed;
+	}
+
+	public void setSpeed(double speed) {
+		this.speed = speed;
+	}
+
+	public Delay dash() {
+		return dash;
+	}
+
+	public void setDash(Delay dash) {
+		this.dash = dash;
+	}
+
+	public Delay cooldown() {
+		return cooldown;
+	}
+
+	public void setCooldown(Delay cooldown) {
+		this.cooldown = cooldown;
 	}
 }

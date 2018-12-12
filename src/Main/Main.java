@@ -36,7 +36,7 @@ public class Main extends Application{
 		
 		Timeline gameLoop = new Timeline();
 	    gameLoop.setCycleCount(Timeline.INDEFINITE);
-	    double interval = (double) (Math.round(((double) 1 / 60) * 1000000)) / 1000;
+	    double interval = (double) (Math.round(((double) 1 / 50) * 1000000)) / 1000;
 	    KeyFrame keyframe = new KeyFrame(Duration.millis(interval), new GameLoop());
 	    gameLoop.getKeyFrames().add(keyframe);
 	    gameLoop.play();
