@@ -24,7 +24,19 @@ public class Level {
 			e.printStackTrace();
 		}
     }
-
+    
+    public void creation() {
+    	
+    }
+    
+    public void createLaser() {
+    	
+    }
+    
+    public void createDisk() {
+    	
+    }
+    
 	public Clip clip() {
 		return clip;
 	}

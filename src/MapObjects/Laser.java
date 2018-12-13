@@ -64,43 +64,38 @@ public class Laser {
 			this.move();
 		}
 		else {
-			if(this.delay().framesPassed() >= this.delay().dur()) {
+			if(this.delay().delayCheck()) {
 				this.delay().setDone(true);
-				MapItems.setGhostLaserSize(MapItems.ghostLaserSize() - 1);
-				MapItems.lasers()[MapItems.laserSize() - 1].setGhostIndex(this.ghostIndex());
-				MapItems.ghostLasers()[this.ghostIndex()] = MapItems.ghostLasers()[MapItems.ghostLaserSize()];
-				MapItems.ghostLasers()[MapItems.ghostLaserSize()] = null;
-			}
-			else {
-				this.delay().increase();
+				this.removeGhost();
 			}
 		}
 		
 		if(this.delay().done() && this.lifeSpan().dur() != 0) {
-			if(this.lifeSpan().framesPassed() >= this.lifeSpan().dur()) {
-				MapItems.setLaserSize(MapItems.laserSize() - 1);
-				MapItems.lasers()[MapItems.laserSize()].setLaserIndex(this.laserIndex()); 
-				MapItems.lasers()[this.laserIndex()] = MapItems.lasers()[MapItems.laserSize()];
-				MapItems.lasers()[MapItems.laserSize()] = null;
-			}
-			else {
-				this.lifeSpan().increase();
+			if(this.lifeSpan().delayCheck()) {
+				this.remove();
 			}
 		}
 		
 		if(this.death().done()) {
-			if(this.death().framesPassed() >= this.death().dur()) {
-				MapItems.setLaserSize(MapItems.laserSize() - 1);
-				MapItems.lasers()[MapItems.laserSize()].setLaserIndex(this.laserIndex()); 
-				MapItems.lasers()[this.laserIndex()] = MapItems.lasers()[MapItems.laserSize()];
-				MapItems.lasers()[MapItems.laserSize()] = null;
-			}
-			else {
-				this.death().increase();
+			if(this.death().delayCheck()) {
+				this.remove();
 			}
 		}
 	}
 	
+	public void removeGhost() {
+		MapItems.setGhostLaserSize(MapItems.ghostLaserSize() - 1);
+		MapItems.lasers()[MapItems.laserSize() - 1].setGhostIndex(this.ghostIndex());
+		MapItems.ghostLasers()[this.ghostIndex()] = MapItems.ghostLasers()[MapItems.ghostLaserSize()];
+		MapItems.ghostLasers()[MapItems.ghostLaserSize()] = null;
+	}
+	
+	public void remove() {
+		MapItems.setLaserSize(MapItems.laserSize() - 1);
+		MapItems.lasers()[MapItems.laserSize()].setLaserIndex(this.laserIndex()); 
+		MapItems.lasers()[this.laserIndex()] = MapItems.lasers()[MapItems.laserSize()];
+		MapItems.lasers()[MapItems.laserSize()] = null;
+	}
 	
 	public void move() {
 		

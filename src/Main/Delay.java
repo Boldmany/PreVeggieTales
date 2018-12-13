@@ -15,6 +15,16 @@ public class Delay {
 		this.setSecondsPassed(this.framesPassed()/60);
 	}
 	
+	public boolean delayCheck() {
+		boolean done = false;
+		if(this.framesPassed() >= this.dur()) {
+			done = true;
+		}
+		else {
+			this.increase();
+		}
+		return done;
+	}
 	
 	public double dur() {
 		return dur;

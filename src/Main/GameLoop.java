@@ -4,39 +4,65 @@ import Character.Pineapple;
 import MapObjects.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 public class GameLoop implements EventHandler<ActionEvent> {
 	
 	private static Color pink = Color.rgb(252,31,109);
 	private static Color warning = Color.rgb(93,35,71); 
-	public Laser thing1 = new Laser(new Vector(550, 0), 50, 0, 1, new Delay(50));
-	public Laser thing2 = new Laser(new Vector(1000, 500), 0, 50, 2, new Delay(150));
-	public Laser thing3 = new Laser(new Vector(100, 650), 50, 0, 3, new Delay(150));
-	public Laser thing4 = new Laser(new Vector(0, 100), 0,50, 4, new Delay(100));
-	public Disk thing5 = new Disk(new Vector(200, 300), 50, new Delay(30), 0.7);
-	public Disk thing6 = new Disk(new Vector(930, 300), 30, new Delay(0), 0.3);
-	public Disk thing7 = new Disk(new Vector(300, 30), 30, new Delay(30), 1);
-	public Image img = new Image("file:resources/pineapple.png");
+	private static int frames = 0;
+	public Laser thing1 = new Laser(new Vector(550, 0), 50, 0, 1, new Delay(3000));
+	public Laser thing2 = new Laser(new Vector(1000, 500), 0, 50, 2, new Delay(3000));
+	public Laser thing3 = new Laser(new Vector(100, 650), 50, 0, 3, new Delay(3000));
+	public Laser thing4 = new Laser(new Vector(0, 100), 0,50, 4, new Delay(3000));
+	public Disk thing5 = new Disk(new Vector(200, 300), 50, new Delay(30), 0.7, false);
+	public Disk thing6 = new Disk(new Vector(930, 300), 30, new Delay(0), 0.3, false);
+	public Disk thing7 = new Disk(new Vector(300, 30), 30, new Delay(40), 1, false);
+	public Disk thing8 = new Disk(new Vector(500, 300), 100, new Delay(30), 1, true);
 	public Pineapple man = new Pineapple(new Vector(500,300));
-	public Level l = new Level("E:\\\\Javashit/PreVeggieTales/resources/autism.wav");
+	//H:\\java/PreVeggieTales/resources/autism.wav
+	//E:\\javashit/PreVeggieTales/resources/autism.wav
+	public Level l = new Level("E:\\javashit/PreVeggieTales/resources/autism.wav");
 	
 	
 	public void handle(ActionEvent ev) {
-		thing1.vec().setY(50);
+		frames++;
+		thing1.vec().setY(75);
+		thing1.lifeSpan().setDur(100);
 		thing2.vec().setX(9);
 		thing3.vec().setY(9);
 		thing4.vec().setX(9);
-		thing5.lifeSpan().setDur(100);
+		thing8.vec().setX(0);
+		thing8.vec().setY(0);
+		//thing5.lifeSpan().setDur(100);
 		thing5.vec().setX(0);
 		thing5.vec().setY(0);
 		thing6.maxSpeed().setX(0);
 		thing7.maxSpeed().setY(0);
+		thing7.vec().setX(0);
 		thing7.lifeSpan().setDur(100);
 		Main.gc().clearRect(0, 0, Main.canvas().getWidth(), Main.canvas().getHeight());
-		Main.gc().setFill(Color.BLACK);
-		Main.gc().fillRect(0, 0, Main.canvas().getWidth(), Main.canvas().getHeight());
+		
+		if(MapItems.safeDiskSize() == 0) {
+			Main.gc().setFill(Color.BLACK);
+			Main.gc().fillRect(0, 0, Main.canvas().getWidth(), Main.canvas().getHeight());
+		}
+		else {
+			if(MapItems.safeDisks()[0].delay().done()) {
+				Main.gc().setFill(pink);
+			}
+			else {
+				Main.gc().setFill(warning);
+			}
+			Main.gc().fillRect(0, 0, Main.canvas().getWidth(), Main.canvas().getHeight());
+			
+			Main.gc().setFill(Color.BLACK);
+			for(int i = 0; i < MapItems.safeDiskSize(); i++) {
+				MapItems.safeDisks()[i].delayCheck();
+				Main.gc().fillOval(MapItems.safeDisks()[i].coord().x() - MapItems.safeDisks()[i].currentRadius(), MapItems.safeDisks()[i].coord().y() - MapItems.safeDisks()[i].currentRadius(),
+						MapItems.safeDisks()[i].currentRadius() * 2, MapItems.safeDisks()[i].currentRadius() * 2);
+			}
+		}
 		
 		Main.gc().setFill(warning);
 		for(int i = 0; i < MapItems.ghostLaserSize(); i++) {

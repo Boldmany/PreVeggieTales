@@ -19,7 +19,9 @@ public class MapItems {
 	private static int diskSize = 0;
 	private static int ghostDiskSize = 0;
 	
-	
+	private static Disk[] safeDisks = new Disk[3000];
+	private static int safeDiskSize = 0;
+			
 	public static int ghostLaserSize() {
 		return ghostLaserSize;
 	}
@@ -98,5 +100,21 @@ public class MapItems {
 
 	public static void setPlayerSize(int playerSize) {
 		MapItems.playerSize = playerSize;
+	}
+
+	public static Disk[] safeDisks() {
+		return safeDisks;
+	}
+
+	public static void setSafeDisks(Disk[] safeDisks) {
+		MapItems.safeDisks = safeDisks;
+	}
+
+	public static int safeDiskSize() {
+		return safeDiskSize;
+	}
+
+	public static void setSafeDiskSize(int safeDiskSize) {
+		MapItems.safeDiskSize = safeDiskSize;
 	}
 }

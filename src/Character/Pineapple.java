@@ -62,7 +62,7 @@ public class Pineapple {
 			this.setSpeed(30);
 		}
 		else {
-			this.setSpeed(3);
+			this.setSpeed(4);
 		}
 		if(angled) {
 			this.setSpeed(this.speed() * Math.cos(Math.toRadians(45)));
@@ -77,7 +77,7 @@ public class Pineapple {
 
 	public void delayCheck() {
 		if(this.dash().done()) {
-			this.setSpeed(3);
+			this.setSpeed(4);
 			this.dash().setFramesPassed(0);
 			
 			if(!this.cooldown().done()) {
