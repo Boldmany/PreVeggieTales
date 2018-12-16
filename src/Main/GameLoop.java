@@ -11,14 +11,14 @@ public class GameLoop implements EventHandler<ActionEvent> {
 	private static Color pink = Color.rgb(252,31,109);
 	private static Color warning = Color.rgb(93,35,71); 
 	private static int frames = 0;
-	public Laser thing1 = new Laser(new Vector(550, 0), 50, 0, 1, new Delay(3000));
+	public Laser thing1 = new Laser(new Vector(550, 0), 50, 0, 1, new Delay(100));
 	public Laser thing2 = new Laser(new Vector(1000, 500), 0, 50, 2, new Delay(3000));
 	public Laser thing3 = new Laser(new Vector(100, 650), 50, 0, 3, new Delay(3000));
 	public Laser thing4 = new Laser(new Vector(0, 100), 0,50, 4, new Delay(3000));
 	public Disk thing5 = new Disk(new Vector(200, 300), 50, new Delay(30), 0.7, false);
-	public Disk thing6 = new Disk(new Vector(930, 300), 30, new Delay(0), 0.3, false);
+	public Disk thing6 = new Disk(new Vector(930, 300), 30, new Delay(0), 0, false);
 	public Disk thing7 = new Disk(new Vector(300, 30), 30, new Delay(40), 1, false);
-	public Disk thing8 = new Disk(new Vector(500, 300), 100, new Delay(30), 1, true);
+	public Disk thing8 = new Disk(new Vector(500, 300), 200, new Delay(30), 0, true);
 	public Pineapple man = new Pineapple(new Vector(500,300));
 	//H:\\java/PreVeggieTales/resources/autism.wav
 	//E:\\javashit/PreVeggieTales/resources/autism.wav
@@ -26,7 +26,7 @@ public class GameLoop implements EventHandler<ActionEvent> {
 	
 	
 	public void handle(ActionEvent ev) {
-		frames++;
+		frames ++;
 		thing1.vec().setY(75);
 		thing1.lifeSpan().setDur(100);
 		thing2.vec().setX(9);
@@ -65,13 +65,18 @@ public class GameLoop implements EventHandler<ActionEvent> {
 		}
 		
 		Main.gc().setFill(warning);
-		for(int i = 0; i < MapItems.ghostLaserSize(); i++) {
-			Main.gc().fillRect(MapItems.ghostLasers()[i].coord().x(), MapItems.ghostLasers()[i].coord().y(),
-					MapItems.ghostLasers()[i].width(), MapItems.ghostLasers()[i].height());
+		if(MapItems.safeDiskSize() == 0) {
+			for(int i = 0; i < MapItems.ghostLaserSize(); i++) {
+				Main.gc().fillRect(MapItems.ghostLasers()[i].coord().x(), MapItems.ghostLasers()[i].coord().y(),
+						MapItems.ghostLasers()[i].width(), MapItems.ghostLasers()[i].height());
+			}
+			for(int i = 0; i < MapItems.ghostDiskSize(); i++) {
+				Main.gc().fillOval(MapItems.ghostDisks()[i].coord().x() - MapItems.ghostDisks()[i].currentRadius(), MapItems.ghostDisks()[i].coord().y() - MapItems.ghostDisks()[i].currentRadius(),
+						MapItems.ghostDisks()[i].currentRadius() * 2, MapItems.ghostDisks()[i].currentRadius() * 2);
+			}
 		}
-		for(int i = 0; i < MapItems.ghostDiskSize(); i++) {
-			Main.gc().fillOval(MapItems.ghostDisks()[i].coord().x() - MapItems.ghostDisks()[i].finalRadius(), MapItems.ghostDisks()[i].coord().y() - MapItems.ghostDisks()[i].finalRadius(),
-					MapItems.ghostDisks()[i].finalRadius() * 2, MapItems.ghostDisks()[i].finalRadius() * 2);
+		else if(frames == 1) {
+			Main.group().getChildren().add(SafeZone.group());
 		}
 		
 		Main.gc().setFill(pink);

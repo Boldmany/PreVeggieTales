@@ -13,6 +13,7 @@ public class Laser {
 	private Delay death = new Delay(5);
 	private int laserIndex;
 	private int ghostIndex;
+	private int pathIndex;
 	
 	
 	public Laser(Vector coord, double width, double height, int dir, Delay delay) {
@@ -27,7 +28,8 @@ public class Laser {
 		MapItems.setLaserSize(MapItems.laserSize() + 1);
 		if(this.delay().dur() != 0) {
 			this.setGhostIndex(MapItems.ghostLaserSize());
-			ghost(new Vector(coord.x(),coord.y()), width, height, dir);
+			Laser warning = new Laser(new Vector(coord.x(),coord.y()), width, height, dir);
+			MapItems.ghostLasers()[this.ghostIndex()] = warning;
 			MapItems.setGhostLaserSize(MapItems.ghostLaserSize() + 1);
 		}
 	}
@@ -37,25 +39,27 @@ public class Laser {
 		this.setWidth(width);
 		this.setHeight(height);
 		this.setDir(dir);
-	}
-
-	public void ghost(Vector coord, double width, double height, int dir) {
-		Laser warning = new Laser(coord, width, height, dir);
+		
 		if(dir == 1) {
-			warning.setHeight(Main.canvas().getHeight());
+			this.setHeight(Main.canvas().getHeight());
 		}
 		else if(dir == 3) {
-			warning.coord().setY(0);
-			warning.setHeight(Main.canvas().getHeight());
+			this.coord().setY(0);
+			this.setHeight(Main.canvas().getHeight());
 		}
 		else if(dir == 2) {
-			warning.coord().setX(0);
-			warning.setWidth(Main.canvas().getWidth());
+			this.coord().setX(0);
+			this.setWidth(Main.canvas().getWidth());
 		}
 		else {
-			warning.setWidth(Main.canvas().getWidth());
+			this.setWidth(Main.canvas().getWidth());
 		}
-		MapItems.ghostLasers()[MapItems.ghostLaserSize()] = warning;
+		
+		for(int i = 0; i < MapItems.safeDiskSize(); i++) {
+			MapItems.safeDisks()[i].safeZone().rectangle(this);
+		}
+		
+		MapItems.ghostLasers()[MapItems.ghostLaserSize()] = this;
 	}
 	
 	public void delayCheck() {
@@ -88,6 +92,12 @@ public class Laser {
 		MapItems.lasers()[MapItems.laserSize() - 1].setGhostIndex(this.ghostIndex());
 		MapItems.ghostLasers()[this.ghostIndex()] = MapItems.ghostLasers()[MapItems.ghostLaserSize()];
 		MapItems.ghostLasers()[MapItems.ghostLaserSize()] = null;
+		
+		for(int i = 0; i < MapItems.safeDiskSize(); i++) {
+			MapItems.safeDisks()[i].safeZone().setPathSize(MapItems.safeDisks()[i].safeZone().pathSize() - 1);
+			MapItems.safeDisks()[i].safeZone().paths()[this.pathIndex()] = MapItems.safeDisks()[i].safeZone().paths()[MapItems.safeDisks()[i].safeZone().pathSize()];
+			MapItems.safeDisks()[i].safeZone().paths()[MapItems.safeDisks()[i].safeZone().pathSize()] = null;
+		}
 	}
 	
 	public void remove() {
@@ -200,5 +210,13 @@ public class Laser {
 
 	public void setLaserIndex(int laserIndex) {
 		this.laserIndex = laserIndex;
+	}
+
+	public int pathIndex() {
+		return pathIndex;
+	}
+
+	public void setPathIndex(int pathIndex) {
+		this.pathIndex = pathIndex;
 	}
 }
