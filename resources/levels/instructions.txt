@@ -1,0 +1,52 @@
+split information for one object by "/" and add a new line for a new object
+Note: type "true" or "false" for boolean demands
+
+First: type "laser" or "disk" for the respective object you want to create
+
+If "laser"
+	int for the frame this should spawn at
+	double x coordinate
+	double y coordinate
+	double x velocity
+	double y velocity
+	double width
+	double hight
+	int how long the warning should last
+	int how long the laser should last(if until collision, set this to 0)
+	direction(1:top to bottom, 2:right to left, 3:bottom to top, 4:left to right)
+
+If disk
+	
+	If The previous disk has redirect as true, do the following:
+	double x velocity
+	double y velocity
+	int how long the disk should last(if until collision, set this to 0)
+	boolean redirect
+	
+	If The previous disk has redirect as false do the following or if this is the first disk you are making:
+	int for the frame this should spawn at
+	double x coordinate
+	double y coordinate
+	double x velocity
+	double y velocity
+	double final radius
+	double radius change(if you want it to instantly be the same size as the final radius, set this to 0)
+	int how long the warning should last
+	int how long the disk should last(if until collision, set this to 0)
+	boolean whether the circle is a safe zone or not
+
+	boolean redirect (the instructions will be covered over the next few lines)
+		becuase I suck at coding this is the best I can do
+		Assume you want to change the direction of a this traveling disk mid way, you cant
+		but here is how you can
+		set the life span to how far you want it to travel
+		so once it dies, spawn a new one ontop of it with new velocities
+		smart...
+
+Note: this doesn't have to be in oreder of spawn time, I will do that in the code, just remeber that 
+redirected disks should come one after the other.
+
+Just try to make the spawn times in order for future editing conveniences 
+		
+		
+	

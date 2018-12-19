@@ -2,7 +2,6 @@ package Main;
 
 public class Delay {
 	private double dur;
-	private double secondsPassed = 0;
 	private int framesPassed = 0;
 	private boolean done = false;
 	
@@ -12,7 +11,6 @@ public class Delay {
 	
 	public void increase() {
 		this.setFramesPassed(this.framesPassed() + 1);
-		this.setSecondsPassed(this.framesPassed()/60);
 	}
 	
 	public boolean delayCheck() {
@@ -42,25 +40,9 @@ public class Delay {
 		this.done = done;
 	}
 
-
-
-	public double secondsPassed() {
-		return secondsPassed;
-	}
-
-
-
-	public void setSecondsPassed(double secondsPassed) {
-		this.secondsPassed = secondsPassed;
-	}
-
-
-
 	public int framesPassed() {
 		return framesPassed;
 	}
-
-
 
 	public void setFramesPassed(int framesPassed) {
 		this.framesPassed = framesPassed;

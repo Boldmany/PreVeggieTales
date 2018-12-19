@@ -3,34 +3,38 @@ import Main.*;
 
 public class Laser {
 	
+	private int spawn;
 	private Vector coord;
-	private Vector vec = new Vector(0,0);
+	private Vector vec;
 	private double width;
 	private double height;
-	private int dir; 
 	private Delay delay;
-	private Delay lifeSpan = new Delay(0);
+	private Delay lifeSpan;
 	private Delay death = new Delay(5);
+	private int dir; 
 	private int laserIndex;
 	private int ghostIndex;
 	private int pathIndex;
 	
 	
-	public Laser(Vector coord, double width, double height, int dir, Delay delay) {
+	public Laser(int spawn, Vector coord, Vector vec, double width, double height, Delay delay, Delay lifeSpan, int dir) {
+		this.setSpawn(spawn);
 		this.setCoord(coord);
+		this.setVec(vec);
 		this.setWidth(width);
 		this.setHeight(height);
-		this.setDir(dir);
 		this.setDelay(delay);
+		this.setLifeSpan(lifeSpan);
+		this.setDir(dir);
 		
-		this.setLaserIndex(MapItems.laserSize());
-		MapItems.lasers()[this.laserIndex()] = this;
-		MapItems.setLaserSize(MapItems.laserSize() + 1);
+		//this.setLaserIndex(MapItems.laserSize());
+		//MapItems.lasers()[this.laserIndex()] = this;
+		//MapItems.setLaserSize(MapItems.laserSize() + 1);
 		if(this.delay().dur() != 0) {
 			this.setGhostIndex(MapItems.ghostLaserSize());
-			Laser warning = new Laser(new Vector(coord.x(),coord.y()), width, height, dir);
-			MapItems.ghostLasers()[this.ghostIndex()] = warning;
-			MapItems.setGhostLaserSize(MapItems.ghostLaserSize() + 1);
+			//Laser warning = new Laser(new Vector(coord.x(),coord.y()), width, height, dir);
+			//MapItems.ghostLasers()[this.ghostIndex()] = warning;
+			//MapItems.setGhostLaserSize(MapItems.ghostLaserSize() + 1);
 		}
 	}
 	
@@ -56,7 +60,7 @@ public class Laser {
 		}
 		
 		for(int i = 0; i < MapItems.safeDiskSize(); i++) {
-			MapItems.safeDisks()[i].safeZone().rectangle(this);
+			MapItems.safeDisks()[i].safeZone().rectangle(this, true);
 		}
 		
 		MapItems.ghostLasers()[MapItems.ghostLaserSize()] = this;
@@ -218,5 +222,13 @@ public class Laser {
 
 	public void setPathIndex(int pathIndex) {
 		this.pathIndex = pathIndex;
+	}
+
+	public int spawn() {
+		return spawn;
+	}
+
+	public void setSpawn(int spawn) {
+		this.spawn = spawn;
 	}
 }
