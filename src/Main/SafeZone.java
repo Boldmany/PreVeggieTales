@@ -62,34 +62,34 @@ public class SafeZone {
 		Main.group().getChildren().remove(onTop);
 		indication.getChildren().clear();
 		onTop.getChildren().clear();
-		for(int i = 0; i < MapItems.safeDiskSize(); i++) {
-			MapItems.safeDisks()[i].safeZone().setPathSize(0);
-			Arrays.fill(MapItems.safeDisks()[i].safeZone().paths(), null);
-			MapItems.safeDisks()[i].safeZone().setSafeCircle(new Circle(MapItems.safeDisks()[i].coord().x(), MapItems.safeDisks()[i].coord().y(), MapItems.safeDisks()[i].currentRadius()));
-			for(int p = 0; p < MapItems.ghostLaserSize(); p++) {
-				MapItems.safeDisks()[i].safeZone().rectangle(MapItems.ghostLasers()[p], true);
+		for(int i = 0; i < Map.safeDiskSize(); i++) {
+			Map.safeDisks()[i].safeZone().setPathSize(0);
+			Arrays.fill(Map.safeDisks()[i].safeZone().paths(), null);
+			Map.safeDisks()[i].safeZone().setSafeCircle(new Circle(Map.safeDisks()[i].coord().x(), Map.safeDisks()[i].coord().y(), Map.safeDisks()[i].currentRadius()));
+			for(int p = 0; p < Map.ghostLaserSize(); p++) {
+				Map.safeDisks()[i].safeZone().rectangle(Map.ghostLasers()[p], true);
 			}
-			for(int p = 0; p < MapItems.ghostDiskSize(); p++) {
-				MapItems.safeDisks()[i].safeZone().circle(MapItems.ghostDisks()[p], true);
+			for(int p = 0; p < Map.ghostDiskSize(); p++) {
+				Map.safeDisks()[i].safeZone().circle(Map.ghostDisks()[p], true);
 			}
-			for(int p = 0; p < MapItems.laserSize(); p++) {
-				if(MapItems.lasers()[p].delay().done()) {
-					MapItems.safeDisks()[i].safeZone().rectangle(MapItems.lasers()[p], false);
+			for(int p = 0; p < Map.laserSize(); p++) {
+				if(Map.lasers()[p].delay().done()) {
+					Map.safeDisks()[i].safeZone().rectangle(Map.lasers()[p], false);
 				}
 			}
-			for(int p = 0; p < MapItems.diskSize(); p++) {
-				if(MapItems.disks()[p].delay().done()) {
-					MapItems.safeDisks()[i].safeZone().circle(MapItems.disks()[p], false);
+			for(int p = 0; p < Map.diskSize(); p++) {
+				if(Map.disks()[p].delay().done()) {
+					Map.safeDisks()[i].safeZone().circle(Map.disks()[p], false);
 				}
 			}
 		}
 		Main.group().getChildren().add(indication);
 		Main.group().getChildren().add(onTop);
-		for(int i = 0; i < MapItems.playerSize(); i++) {
-			ImageView pineapple = new ImageView(MapItems.players()[i].img());
-			pineapple.setX(MapItems.players()[i].coord().x() - 13);
-			pineapple.setY(MapItems.players()[i].coord().y() - 25);
-			pineapple.getTransforms().add(MapItems.players()[i].rotate());
+		for(int i = 0; i < Map.playerSize(); i++) {
+			ImageView pineapple = new ImageView(Map.players()[i].img());
+			pineapple.setX(Map.players()[i].coord().x() - 13);
+			pineapple.setY(Map.players()[i].coord().y() - 25);
+			pineapple.getTransforms().add(Map.players()[i].rotate());
 			onTop.getChildren().add(pineapple);
 		}
 	}

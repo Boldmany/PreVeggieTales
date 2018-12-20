@@ -22,8 +22,8 @@ public class Pineapple {
 		this.coord().setY(this.coord().y());
 		rotate.setPivotX(this.coord().x());
 		rotate.setPivotY(this.coord().y());
-		MapItems.players()[MapItems.playerSize()] = this;
-		MapItems.setPlayerSize(MapItems.playerSize() + 1);
+		Map.players()[Map.playerSize()] = this;
+		Map.setPlayerSize(Map.playerSize() + 1);
 	}
 	
 	public void move() {

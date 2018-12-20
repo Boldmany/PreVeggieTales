@@ -10,19 +10,19 @@ public class GameLoop implements EventHandler<ActionEvent> {
 	private static Color pink = Color.rgb(252,31,109);
 	private static Color warning = Color.rgb(93,35,71); 
 	public Pineapple man = new Pineapple(new Vector(500,300));
-	public Level level1 = new Level(1);
-	
 	
 	public void handle(ActionEvent ev) {
-		level1.delayCheck();
+		
+		Map.levels()[Map.playLevel()].delayCheck();
+		
 		Main.gc().clearRect(0, 0, Main.canvas().getWidth(), Main.canvas().getHeight());
 		
-		if(MapItems.safeDiskSize() == 0) {
+		if(Map.safeDiskSize() == 0) {
 			Main.gc().setFill(Color.BLACK);
 			Main.gc().fillRect(0, 0, Main.canvas().getWidth(), Main.canvas().getHeight());
 		}
 		else {
-			if(MapItems.safeDisks()[0].delay().done()) {
+			if(Map.safeDisks()[0].delay().done()) {
 				Main.gc().setFill(pink);
 			}
 			else {
@@ -31,63 +31,72 @@ public class GameLoop implements EventHandler<ActionEvent> {
 			Main.gc().fillRect(0, 0, Main.canvas().getWidth(), Main.canvas().getHeight());
 			
 			Main.gc().setFill(Color.BLACK);
-			for(int i = 0; i < MapItems.safeDiskSize(); i++) {
-				MapItems.safeDisks()[i].delayCheck();
-				Main.gc().fillOval(MapItems.safeDisks()[i].coord().x() - MapItems.safeDisks()[i].currentRadius(), MapItems.safeDisks()[i].coord().y() - MapItems.safeDisks()[i].currentRadius(),
-						MapItems.safeDisks()[i].currentRadius() * 2, MapItems.safeDisks()[i].currentRadius() * 2);
+			for(int i = 0; i < Map.safeDiskSize(); i++) {
+				int startSize = Map.safeDiskSize();
+				Map.safeDisks()[i].delayCheck();
+				if(Map.safeDiskSize() != startSize) {
+					i--;
+				}
+				else if(Map.safeDiskSize() != 0) {
+					Main.gc().fillOval(Map.safeDisks()[i].coord().x() - Map.safeDisks()[i].currentRadius(), Map.safeDisks()[i].coord().y() - Map.safeDisks()[i].currentRadius(),
+							Map.safeDisks()[i].currentRadius() * 2, Map.safeDisks()[i].currentRadius() * 2);
+				}
+				if(Map.safeDiskSize() == 0) {
+					Main.gc().fillRect(0, 0, Main.canvas().getWidth(), Main.canvas().getHeight());
+				}
 			}
 		}
 		
 		Main.gc().setFill(warning);
-		if(MapItems.safeDiskSize() == 0) {
-			for(int i = 0; i < MapItems.ghostLaserSize(); i++) {
-				Main.gc().fillRect(MapItems.ghostLasers()[i].coord().x(), MapItems.ghostLasers()[i].coord().y(),
-						MapItems.ghostLasers()[i].width(), MapItems.ghostLasers()[i].height());
+		if(Map.safeDiskSize() == 0) {
+			for(int i = 0; i < Map.ghostLaserSize(); i++) {
+				Main.gc().fillRect(Map.ghostLasers()[i].coord().x(), Map.ghostLasers()[i].coord().y(),
+						Map.ghostLasers()[i].width(), Map.ghostLasers()[i].height());
 			}
-			for(int i = 0; i < MapItems.ghostDiskSize(); i++) {
-				Main.gc().fillOval(MapItems.ghostDisks()[i].coord().x() - MapItems.ghostDisks()[i].currentRadius(), MapItems.ghostDisks()[i].coord().y() - MapItems.ghostDisks()[i].currentRadius(),
-						MapItems.ghostDisks()[i].currentRadius() * 2, MapItems.ghostDisks()[i].currentRadius() * 2);
+			for(int i = 0; i < Map.ghostDiskSize(); i++) {
+				Main.gc().fillOval(Map.ghostDisks()[i].coord().x() - Map.ghostDisks()[i].currentRadius(), Map.ghostDisks()[i].coord().y() - Map.ghostDisks()[i].currentRadius(),
+						Map.ghostDisks()[i].currentRadius() * 2, Map.ghostDisks()[i].currentRadius() * 2);
 			}
 		}
 		
 		Main.gc().setFill(pink);
-		for(int i = 0; i < MapItems.laserSize(); i++) {
-			int startSize = MapItems.laserSize();
+		for(int i = 0; i < Map.laserSize(); i++) {
+			int startSize = Map.laserSize();
 			
-			MapItems.lasers()[i].delayCheck();
+			Map.lasers()[i].delayCheck();
 			
-			if(MapItems.laserSize() == startSize) {
-				if(MapItems.lasers()[i].delay().done()) {
-					Main.gc().fillRect(MapItems.lasers()[i].coord().x(), MapItems.lasers()[i].coord().y(),
-							MapItems.lasers()[i].width(), MapItems.lasers()[i].height());
+			if(Map.laserSize() == startSize) {
+				if(Map.lasers()[i].delay().done()) {
+					Main.gc().fillRect(Map.lasers()[i].coord().x(), Map.lasers()[i].coord().y(),
+							Map.lasers()[i].width(), Map.lasers()[i].height());
 				}
 			}
-			if(MapItems.laserSize() < startSize) {
+			else {
 				i -= 1;
 			}
 		}
-		for(int i = 0; i < MapItems.diskSize(); i++) {
-			int startSize = MapItems.diskSize();
+		for(int i = 0; i < Map.diskSize(); i++) {
+			int startSize = Map.diskSize();
+			//the things still equal when they shouldn't for redirect
+			Map.disks()[i].delayCheck();
 			
-			MapItems.disks()[i].delayCheck();
-			
-			if(MapItems.diskSize() == startSize) {
-				if(MapItems.disks()[i].delay().done()) {
-					Main.gc().fillOval(MapItems.disks()[i].coord().x() - MapItems.disks()[i].currentRadius(), MapItems.disks()[i].coord().y() - MapItems.disks()[i].currentRadius(),
-							MapItems.disks()[i].currentRadius() * 2, MapItems.disks()[i].currentRadius() * 2);
+			if(Map.diskSize() == startSize) {
+				if(Map.disks()[i].delay().done()) {
+					Main.gc().fillOval(Map.disks()[i].coord().x() - Map.disks()[i].currentRadius(), Map.disks()[i].coord().y() - Map.disks()[i].currentRadius(),
+							Map.disks()[i].currentRadius() * 2, Map.disks()[i].currentRadius() * 2);
 				}
 			}
-			if(MapItems.diskSize() < startSize) {
+			else {
 				i -= 1;
 			}
 		}
 		
-		for(int i = 0; i < MapItems.playerSize(); i++) {
-			MapItems.players()[i].move();
+		for(int i = 0; i < Map.playerSize(); i++) {
+			Map.players()[i].move();
 			Main.gc().save();
-			Main.gc().transform(MapItems.players()[i].rotate().getMxx(), MapItems.players()[i].rotate().getMyx(), MapItems.players()[i].rotate().getMxy(), 
-					MapItems.players()[i].rotate().getMyy(), MapItems.players()[i].rotate().getTx(), MapItems.players()[i].rotate().getTy());
-			Main.gc().drawImage(MapItems.players()[i].img(), MapItems.players()[i].coord().x() - 13, MapItems.players()[i].coord().y() - 25);
+			Main.gc().transform(Map.players()[i].rotate().getMxx(), Map.players()[i].rotate().getMyx(), Map.players()[i].rotate().getMxy(), 
+					Map.players()[i].rotate().getMyy(), Map.players()[i].rotate().getTx(), Map.players()[i].rotate().getTy());
+			Main.gc().drawImage(Map.players()[i].img(), Map.players()[i].coord().x() - 13, Map.players()[i].coord().y() - 25);
 			Main.gc().restore();
 		}
 		SafeZone.update();

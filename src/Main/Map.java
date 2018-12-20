@@ -4,7 +4,7 @@ import Character.Pineapple;
 import MapObjects.Disk;
 import MapObjects.Laser;
 
-public class MapItems {
+public class Map {
 	
 	private static Pineapple[] players = new Pineapple[2];
 	private static int playerSize = 0;
@@ -21,13 +21,16 @@ public class MapItems {
 	
 	private static Disk[] safeDisks = new Disk[3000];
 	private static int safeDiskSize = 0;
+	
+	private static Level[] levels = {new Level(1), new Level(2), new Level(3), new Level(4), new Level(5),};
+	private static int playLevel = 0;
 			
 	public static int ghostLaserSize() {
 		return ghostLaserSize;
 	}
 
 	public static void setGhostLaserSize(int ghostLaserSize) {
-		MapItems.ghostLaserSize = ghostLaserSize;
+		Map.ghostLaserSize = ghostLaserSize;
 	}
 
 	public static int laserSize() {
@@ -35,7 +38,7 @@ public class MapItems {
 	}
 
 	public static void setLaserSize(int laserSize) {
-		MapItems.laserSize = laserSize;
+		Map.laserSize = laserSize;
 	}
 
 	public static Laser[] lasers() {
@@ -43,7 +46,7 @@ public class MapItems {
 	}
 
 	public static void setLasers(Laser[] lasers) {
-		MapItems.lasers = lasers;
+		Map.lasers = lasers;
 	}
 
 	public static Laser[] ghostLasers() {
@@ -51,7 +54,7 @@ public class MapItems {
 	}
 
 	public static void setGhostLasers(Laser[] ghostLasers) {
-		MapItems.ghostLasers = ghostLasers;
+		Map.ghostLasers = ghostLasers;
 	}
 
 	public static Disk[] disks() {
@@ -59,7 +62,7 @@ public class MapItems {
 	}
 
 	public static void setDisks(Disk[] disks) {
-		MapItems.disks = disks;
+		Map.disks = disks;
 	}
 
 	public static Disk[] ghostDisks() {
@@ -67,7 +70,7 @@ public class MapItems {
 	}
 
 	public static void setGhostDisks(Disk[] ghostDisks) {
-		MapItems.ghostDisks = ghostDisks;
+		Map.ghostDisks = ghostDisks;
 	}
 
 	public static int diskSize() {
@@ -75,7 +78,7 @@ public class MapItems {
 	}
 
 	public static void setDiskSize(int diskSize) {
-		MapItems.diskSize = diskSize;
+		Map.diskSize = diskSize;
 	}
 
 	public static int ghostDiskSize() {
@@ -83,7 +86,7 @@ public class MapItems {
 	}
 
 	public static void setGhostDiskSize(int ghostDiskSize) {
-		MapItems.ghostDiskSize = ghostDiskSize;
+		Map.ghostDiskSize = ghostDiskSize;
 	}
 
 	public static Pineapple[] players() {
@@ -91,7 +94,7 @@ public class MapItems {
 	}
 
 	public static void setPlayers(Pineapple[] players) {
-		MapItems.players = players;
+		Map.players = players;
 	}
 
 	public static int playerSize() {
@@ -99,7 +102,7 @@ public class MapItems {
 	}
 
 	public static void setPlayerSize(int playerSize) {
-		MapItems.playerSize = playerSize;
+		Map.playerSize = playerSize;
 	}
 
 	public static Disk[] safeDisks() {
@@ -107,7 +110,7 @@ public class MapItems {
 	}
 
 	public static void setSafeDisks(Disk[] safeDisks) {
-		MapItems.safeDisks = safeDisks;
+		Map.safeDisks = safeDisks;
 	}
 
 	public static int safeDiskSize() {
@@ -115,6 +118,22 @@ public class MapItems {
 	}
 
 	public static void setSafeDiskSize(int safeDiskSize) {
-		MapItems.safeDiskSize = safeDiskSize;
+		Map.safeDiskSize = safeDiskSize;
+	}
+
+	public static Level[] levels() {
+		return levels;
+	}
+
+	public static void setLevels(Level[] levels) {
+		Map.levels = levels;
+	}
+
+	public static int playLevel() {
+		return playLevel;
+	}
+
+	public static void setPlayLevel(int playLevel) {
+		Map.playLevel = playLevel;
 	}
 }

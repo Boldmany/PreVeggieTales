@@ -23,6 +23,7 @@ public class Disk {
 	private int diskIndex;
 	private int ghostIndex;
 	private int pathIndex;
+	private int safeDiskIndex;
 	
 	public Disk(int spawn, Vector coord, Vector vec, Vector maxSpeed, double finalRadius, double radiusChange, Delay delay, Delay lifeSpan, boolean safe, boolean redirect) {
 		this.setSpawn(spawn);
@@ -42,47 +43,30 @@ public class Disk {
 		if (this.vec().y() < 0) {
 			this.dir().setY(-1);
 		}
-		
-		if(!safe) {
-			//this.setDiskIndex(MapItems.diskSize());
-			//MapItems.disks()[MapItems.diskSize()] = this;
-			//MapItems.setDiskSize(MapItems.diskSize() + 1);
-			if(this.delay().dur() != 0) {
-				//this.setGhostIndex(MapItems.ghostDiskSize());
-				//Disk warning = new Disk(new Vector(coord.x(),coord.y()), finalRadius);
-				//MapItems.ghostDisks()[MapItems.ghostDiskSize()] = warning;
-				//MapItems.setGhostDiskSize(MapItems.ghostDiskSize() + 1);
-			}
-		}
-		else {
-			this.setCurrentRadius(finalRadius);
-			this.setSafeZone(new SafeZone(this));
-			//MapItems.safeDisks()[MapItems.safeDiskSize()] = this;
-			//MapItems.setSafeDiskSize(MapItems.safeDiskSize() + 1);
-			for(int i = 0; i < MapItems.ghostDiskSize(); i++) {
-				this.safeZone().circle(MapItems.ghostDisks()[i], true);
-			}
-			for(int i = 0; i < MapItems.ghostLaserSize(); i++) {
-				this.safeZone().rectangle(MapItems.ghostLasers()[i], true);
-			}
-		}
 	}
 	
 	public Disk(Vector coord, double finalRadius) {
 		this.setCoord(coord);
 		this.setCurrentRadius(finalRadius);
-		for(int i = 0; i < MapItems.safeDiskSize(); i++) {
-			MapItems.safeDisks()[i].safeZone().circle(this, true);
+		for(int i = 0; i < Map.safeDiskSize(); i++) {
+			Map.safeDisks()[i].safeZone().circle(this, true);
 		}
+	}
+	
+	public Disk(Vector vec, Vector maxSpeed, Delay LifeSpan, boolean redirect) {
+		this.setVec(vec);
+		this.setMaxSpeed(maxSpeed);
+		this.setLifeSpan(LifeSpan);
+		this.setRedirect(redirect);
 	}
 	
 	public void delayCheck() {
 		
 		if(this.delay().done()) {
 			this.changeRadius();
-			if(this.delay.dur() != 0 && !this.safe()) {
+			if(this.delay.dur() != -1 && !this.safe()) {
 				if(this.currentRadius() == this.finalRadius() && this.radiusChange() != 0) {
-					if(this.lifeSpan().dur() == 0 && this.vec().x() == 0 && this.vec().y() == 0) {
+					if(this.lifeSpan().dur() == -1 && this.vec().x() == 0 && this.vec().y() == 0) {
 						this.setRadiusChange(this.radiusChange() * -2);
 					}
 					else {
@@ -106,14 +90,14 @@ public class Disk {
 			}
 		}
 		
-		if(this.delay().done() && this.lifeSpan().dur() != 0) {
+		if(this.delay().done() && this.lifeSpan().dur() != -1) {
 			if(this.currentRadius() == this.finalRadius()) {
 				if(this.lifeSpan().delayCheck()) {
-					if(!this.redirect()) {
-						this.setRadiusChange(-1.4);
+					if(this.redirect() || this.safe()) {
+						this.death().setDone(true);
 					}
 					else {
-						this.death().setDone(true);;
+						this.setRadiusChange(-1.4);
 					}
 				}	
 			}
@@ -163,28 +147,52 @@ public class Disk {
 	}
 	
 	public void remove() {
-		MapItems.setDiskSize(MapItems.diskSize() - 1);
-		MapItems.disks()[MapItems.diskSize()].setDiskIndex(this.diskIndex()); 
-		MapItems.disks()[this.diskIndex()] = MapItems.disks()[MapItems.diskSize()];
-		MapItems.disks()[MapItems.diskSize()] = null;
+		if(this.redirect()) {
+			Disk disk = new Disk(0, this.coord(), Map.levels()[Map.playLevel()].redirect()[Map.levels()[Map.playLevel()].currentRedirect()].vec(), 
+					Map.levels()[Map.playLevel()].redirect()[Map.levels()[Map.playLevel()].currentRedirect()].maxSpeed(), this.finalRadius(), 0, new Delay(0),
+					Map.levels()[Map.playLevel()].redirect()[Map.levels()[Map.playLevel()].currentRedirect()].lifeSpan(), this.safe(), 
+					Map.levels()[Map.playLevel()].redirect()[Map.levels()[Map.playLevel()].currentRedirect()].redirect());
+			if(this.safe()) {
+				Map.safeDisks()[Map.safeDiskSize()] = disk;
+				Map.setSafeDiskSize(Map.safeDiskSize() + 1);
+			}
+			else {
+				disk.setDiskIndex(Map.diskSize());
+				Map.disks()[Map.diskSize()] = disk;
+				Map.setDiskSize(Map.diskSize() + 1);
+			}
+		}
+		
+		if(!this.safe()) {
+			Map.setDiskSize(Map.diskSize() - 1);
+			Map.disks()[Map.diskSize()].setDiskIndex(this.diskIndex()); 
+			Map.disks()[this.diskIndex()] = Map.disks()[Map.diskSize()];
+			Map.disks()[Map.diskSize()] = null;
+		}
+		else {
+			Map.setSafeDiskSize(Map.safeDiskSize() - 1);
+			Map.safeDisks()[Map.safeDiskSize()].setSafeDiskIndex(this.safeDiskIndex()); 
+			Map.safeDisks()[this.safeDiskIndex()] = Map.safeDisks()[Map.safeDiskSize()];
+			Map.safeDisks()[Map.safeDiskSize()] = null;
+		}	
 	}
 	
 	public void removeGhost() {
-		MapItems.setGhostDiskSize(MapItems.ghostDiskSize() - 1);
-		MapItems.disks()[MapItems.diskSize() - 1].setGhostIndex(this.ghostIndex());
-		MapItems.ghostDisks()[this.ghostIndex()] = MapItems.ghostDisks()[MapItems.ghostDiskSize()];
-		MapItems.ghostDisks()[MapItems.ghostDiskSize()] = null;
+		Map.setGhostDiskSize(Map.ghostDiskSize() - 1);
+		Map.disks()[Map.diskSize() - 1].setGhostIndex(this.ghostIndex());
+		Map.ghostDisks()[this.ghostIndex()] = Map.ghostDisks()[Map.ghostDiskSize()];
+		Map.ghostDisks()[Map.ghostDiskSize()] = null;
 		
-		for(int i = 0; i < MapItems.safeDiskSize(); i++) {
-			MapItems.safeDisks()[i].safeZone().paths()[this.pathIndex()] = MapItems.safeDisks()[i].safeZone().paths()[MapItems.safeDisks()[i].safeZone().pathSize()];
-			MapItems.safeDisks()[i].safeZone().paths()[MapItems.safeDisks()[i].safeZone().pathSize()] = null;
+		for(int i = 0; i < Map.safeDiskSize(); i++) {
+			Map.safeDisks()[i].safeZone().paths()[this.pathIndex()] = Map.safeDisks()[i].safeZone().paths()[Map.safeDisks()[i].safeZone().pathSize()];
+			Map.safeDisks()[i].safeZone().paths()[Map.safeDisks()[i].safeZone().pathSize()] = null;
 		}
 	}
 	
 	public void removeSafe() {
-		MapItems.setSafeDiskSize(MapItems.safeDiskSize() - 1);
-		MapItems.safeDisks()[Arrays.asList(MapItems.safeDisks()).indexOf(this)] = MapItems.safeDisks()[MapItems.safeDiskSize()];
-		MapItems.safeDisks()[MapItems.safeDiskSize()] = null;
+		Map.setSafeDiskSize(Map.safeDiskSize() - 1);
+		Map.safeDisks()[Arrays.asList(Map.safeDisks()).indexOf(this)] = Map.safeDisks()[Map.safeDiskSize()];
+		Map.safeDisks()[Map.safeDiskSize()] = null;
 	}
 	
 	
@@ -321,5 +329,13 @@ public class Disk {
 
 	public void setRedirect(boolean redirect) {
 		this.redirect = redirect;
+	}
+
+	public int safeDiskIndex() {
+		return safeDiskIndex;
+	}
+
+	public void setSafeDiskIndex(int safeDiskIndex) {
+		this.safeDiskIndex = safeDiskIndex;
 	}
 }

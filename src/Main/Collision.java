@@ -5,38 +5,14 @@ import MapObjects.*;
 public class Collision {
 	
 	public static void laserToWall(Laser laser) {
-		if(laser.dir() == 1) {
-			if(laser.height() >= Main.canvas().getHeight()) {
-				if(laser.lifeSpan().dur() == 0) {
-					laser.death().setDone(true);
-				}
-				laser.vec().setY(0);
+		if(laser.height() > Main.canvas().getHeight() ||
+				laser.coord().x() < 0 ||
+				laser.coord().y() < 0 ||
+				laser.width() > Main.canvas().getWidth()) {
+			if(laser.lifeSpan().dur() == 0) {
+				laser.death().setDone(true);
 			}
-			
-		}
-		else if(laser.dir() == 2) {
-			if(laser.coord().x() <= 0) {
-				if(laser.lifeSpan().dur() == 0) {
-					laser.death().setDone(true);
-				}
-				laser.vec().setX(0);
-			}
-		}
-		else if(laser.dir() == 3) {
-			if(laser.coord().y() <= 0) {
-				if(laser.lifeSpan().dur() == 0) {
-					laser.death().setDone(true);
-				}
-				laser.vec().setY(0);
-			}
-		}
-		else if (laser.dir() == 4){
-			if(laser.width() >= Main.canvas().getWidth()) {
-				if(laser.lifeSpan().dur() == 0) {
-					laser.death().setDone(true);
-				}
-				laser.vec().setX(0);
-			}
+			laser.vec().setY(0);
 		}
 	}
 	
