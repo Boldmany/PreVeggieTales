@@ -1,8 +1,14 @@
 package MapObjects;
 
 import java.util.Arrays;
+import java.util.Objects;
 
-import Main.*;
+import Main.Collision;
+import Main.Delay;
+import Main.Map;
+import Main.SafeZone;
+import Main.Vector;
+import javafx.scene.shape.Circle;
 
 public class Disk {
 	
@@ -14,9 +20,13 @@ public class Disk {
 	private double currentRadius = 0;
 	private double finalRadius;
 	private double radiusChange;
+	private double degree;
+	private double degreeChange;
+	private Circle circularPath;
 	private Delay delay;
 	private Delay lifeSpan;
 	private Delay death = new Delay(0);
+	private boolean circularMotion;
 	private boolean safe;
 	private boolean redirect;
 	private SafeZone safeZone;
@@ -25,15 +35,19 @@ public class Disk {
 	private int pathIndex;
 	private int safeDiskIndex;
 	
-	public Disk(int spawn, Vector coord, Vector vec, Vector maxSpeed, double finalRadius, double radiusChange, Delay delay, Delay lifeSpan, boolean safe, boolean redirect) {
+	public Disk(int spawn, Vector coord, Vector vec, Vector maxSpeed, double finalRadius, double radiusChange,  boolean circularMotion, double degree, double degreeChange,  Circle circularPath, Delay delay, Delay lifeSpan, boolean safe, boolean redirect) {
 		this.setSpawn(spawn);
 		this.setCoord(coord);
 		this.setVec(vec);
 		this.setMaxSpeed(maxSpeed);
 		this.setFinalRadius(finalRadius);
-		this.setRadiusChange(radiusChange);
+		this.setRadiusChange(radiusChange); 
+		this.setDegree(degree);
+		this.setDegreeChange(degreeChange);
+		this.setCircularPath(circularPath);
 		this.setDelay(delay);
 		this.setLifeSpan(lifeSpan);
+		this.setCircularMotion(circularMotion);
 		this.setSafe(safe);
 		this.setRedirect(redirect);
 		
@@ -53,26 +67,33 @@ public class Disk {
 		}
 	}
 	
-	public Disk(Vector vec, Vector maxSpeed, Delay LifeSpan, boolean redirect) {
+	public Disk(Vector vec, Vector maxSpeed, double radiusChange, Delay LifeSpan, boolean redirect) {
 		this.setVec(vec);
 		this.setMaxSpeed(maxSpeed);
+		this.setRadiusChange(radiusChange);
 		this.setLifeSpan(LifeSpan);
 		this.setRedirect(redirect);
 	}
 	
 	public void delayCheck() {
 		
+		if(this.delay().delayCheck() && !this.delay().done()) {
+			this.delay().setDone(true); 
+			if(this.delay().dur() != 0) {
+				this.removeGhost();
+			}
+		}
+		
 		if(this.delay().done()) {
 			this.changeRadius();
-			if(this.delay.dur() != -1 && !this.safe()) {
+			if(!Objects.isNull(this.ghostIndex())) {
 				if(this.currentRadius() == this.finalRadius() && this.radiusChange() != 0) {
-					if(this.lifeSpan().dur() == -1 && this.vec().x() == 0 && this.vec().y() == 0) {
+					if(this.lifeSpan().dur() == 0 && this.vec().x() == 0 && this.vec().y() == 0) {
 						this.setRadiusChange(this.radiusChange() * -2);
 					}
 					else {
 						this.setRadiusChange(0);
 					}
-					this.removeGhost();
 				}
 			}
 			if(this.radiusChange() == 0 && this.currentRadius() != this.finalRadius()){
@@ -80,17 +101,16 @@ public class Disk {
 			}
 			
 			if(this.currentRadius() == this.finalRadius()) {
-				this.move();
+				if(this.circularMotion()) {
+					this.moveInCircle();
+				}
+				else {
+					this.move();
+				}
 			}
 		}
 		
-		else {
-			if(this.delay().delayCheck()) {
-				this.delay().setDone(true);
-			}
-		}
-		
-		if(this.delay().done() && this.lifeSpan().dur() != -1) {
+		if(this.delay().done() && this.lifeSpan().dur() != 0) {
 			if(this.currentRadius() == this.finalRadius()) {
 				if(this.lifeSpan().delayCheck()) {
 					if(this.redirect() || this.safe()) {
@@ -146,12 +166,25 @@ public class Disk {
 		}
 	}
 	
+	public void moveInCircle() {
+		this.setDegree((this.degree() + this.degreeChange()) % 360);
+		this.coord().setX(this.circularPath().getCenterX() + (this.circularPath().getRadius() * Math.cos(Math.toRadians(this.degree()))));
+		this.coord().setY(this.circularPath().getCenterY() + (this.circularPath().getRadius() * Math.sin(Math.toRadians(this.degree()))));
+	}
+	
 	public void remove() {
 		if(this.redirect()) {
 			Disk disk = new Disk(0, this.coord(), Map.levels()[Map.playLevel()].redirect()[Map.levels()[Map.playLevel()].currentRedirect()].vec(), 
-					Map.levels()[Map.playLevel()].redirect()[Map.levels()[Map.playLevel()].currentRedirect()].maxSpeed(), this.finalRadius(), 0, new Delay(0),
-					Map.levels()[Map.playLevel()].redirect()[Map.levels()[Map.playLevel()].currentRedirect()].lifeSpan(), this.safe(), 
-					Map.levels()[Map.playLevel()].redirect()[Map.levels()[Map.playLevel()].currentRedirect()].redirect());
+					Map.levels()[Map.playLevel()].redirect()[Map.levels()[Map.playLevel()].currentRedirect()].maxSpeed(), this.finalRadius(), 0, this.circularMotion(), this.degree(), 
+					Map.levels()[Map.playLevel()].redirect()[Map.levels()[Map.playLevel()].currentRedirect()].degreeChange(), this.circularPath(), new Delay(0),
+					Map.levels()[Map.playLevel()].redirect()[Map.levels()[Map.playLevel()].currentRedirect()].lifeSpan(),
+					this.safe(), Map.levels()[Map.playLevel()].redirect()[Map.levels()[Map.playLevel()].currentRedirect()].redirect());
+			disk.setCurrentRadius(disk.finalRadius());
+			
+			if(disk.circularMotion()) {
+				disk.coord().setX(disk.circularPath().getCenterX() + (disk.circularPath().getRadius() * Math.cos(Math.toRadians(disk.degree()))));
+				disk.coord().setY(disk.circularPath().getCenterY() + (disk.circularPath().getRadius() * Math.sin(Math.toRadians(disk.degree()))));
+			}
 			if(this.safe()) {
 				Map.safeDisks()[Map.safeDiskSize()] = disk;
 				Map.setSafeDiskSize(Map.safeDiskSize() + 1);
@@ -337,5 +370,37 @@ public class Disk {
 
 	public void setSafeDiskIndex(int safeDiskIndex) {
 		this.safeDiskIndex = safeDiskIndex;
+	}
+
+	public boolean circularMotion() {
+		return circularMotion;
+	}
+
+	public void setCircularMotion(boolean circularMotion) {
+		this.circularMotion = circularMotion;
+	}
+
+	public Circle circularPath() {
+		return circularPath;
+	}
+
+	public void setCircularPath(Circle circularPath) {
+		this.circularPath = circularPath;
+	}
+
+	public double degree() {
+		return degree;
+	}
+
+	public void setDegree(double degree) {
+		this.degree = degree;
+	}
+
+	public double degreeChange() {
+		return degreeChange;
+	}
+
+	public void setDegreeChange(double degreeChange) {
+		this.degreeChange = degreeChange;
 	}
 }

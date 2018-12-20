@@ -58,17 +58,18 @@ public class Laser {
 	
 	public void delayCheck() {
 		
-		if(this.delay().done()) {
-			this.move();
-		}
-		else {
-			if(this.delay().delayCheck()) {
-				this.delay().setDone(true);
+		if(this.delay().delayCheck() && !this.delay().done()) {
+			this.delay().setDone(true);
+			if(this.delay().dur() != 0) {
 				this.removeGhost();
 			}
 		}
 		
-		if(this.delay().done() && this.lifeSpan().dur() != -1) {
+		if(this.delay().done()) {
+			this.move();
+		}
+		
+		if(this.delay().done() && this.lifeSpan().dur() != 0) {
 			if(this.lifeSpan().delayCheck()) {
 				this.remove();
 			}

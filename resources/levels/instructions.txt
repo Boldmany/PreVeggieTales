@@ -9,24 +9,27 @@ If "laser"
 	double y coordinate
 	double x velocity
 	double y velocity
-	double the max speed in the x direction before changing x direction(put 0 if you want it to move left or right)
-	double the max speed in the y direction before changing y direction(put 0 if you want it to move up or down)
 	double width
 	double hight
 	int how long the warning should last
 	int how long the laser should last(if until collision, set this to 0)
+	direction(1:top to bottom, 2:right to left, 3:bottom to top, 4:left to right)
 
 If disk
 	
 	If The previous disk has redirect as true, do the following:
+
 	double x velocity
 	double y velocity
-	double the max speed in the x direction before changing x direction(put 0 if you want it to move left or right)
-	double the max speed in the y direction before changing y direction(put 0 if you want it to move up or down)
+
+	If the previous disk had followed a cuircular path, if not just set this to 0
+	double how many degrees its going to shift every frame(this can be negative)
+
 	int how long the disk should last(if until collision, set this to 0)
 	boolean redirect
 	
 	If The previous disk has redirect as false do the following or if this is the first disk you are making:
+
 	int for the frame this should spawn at
 	double x coordinate
 	double y coordinate
@@ -35,7 +38,16 @@ If disk
 	double the max speed in the x direction before changing x direction(put 0 if you want it to move left or right)
 	double the max speed in the y direction before changing y direction(put 0 if you want it to move up or down)
 	double final radius
-	double radius change(if you want it to instantly be the same size as the final radius, set this to 0, but if you have a delay, set this to the radius of the circle for )
+	double radius change(if you want it to instantly be the same size as the final radius, set this to 0)
+	boolean if the disk follows a circular path
+	
+	if circular path is false, then set the next few thing to zero
+	double degree the disk starts on the path
+	double how many degrees its going to shift every frame(this can be negative)
+	double x coordinate of the circle
+	double y coordinate of the circle
+	double radius of the circle
+
 	int how long the warning should last
 	int how long the disk should last(if until collision, set this to 0)
 	boolean whether the circle is a safe zone or not

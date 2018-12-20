@@ -1,6 +1,7 @@
 package Main;
 
 import Character.Pineapple;
+import MapObjects.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.paint.Color;
@@ -13,6 +14,9 @@ public class GameLoop implements EventHandler<ActionEvent> {
 	
 	public void handle(ActionEvent ev) {
 		
+		if(!Map.levels()[Map.playLevel()].clip().isRunning()) {
+			Map.levels()[Map.playLevel()].clip().start();
+		}
 		Map.levels()[Map.playLevel()].delayCheck();
 		
 		Main.gc().clearRect(0, 0, Main.canvas().getWidth(), Main.canvas().getHeight());
@@ -61,11 +65,11 @@ public class GameLoop implements EventHandler<ActionEvent> {
 		
 		Main.gc().setFill(pink);
 		for(int i = 0; i < Map.laserSize(); i++) {
-			int startSize = Map.laserSize();
+			Laser laser = Map.lasers()[i];
 			
 			Map.lasers()[i].delayCheck();
 			
-			if(Map.laserSize() == startSize) {
+			if(laser == Map.lasers()[i]) {
 				if(Map.lasers()[i].delay().done()) {
 					Main.gc().fillRect(Map.lasers()[i].coord().x(), Map.lasers()[i].coord().y(),
 							Map.lasers()[i].width(), Map.lasers()[i].height());
@@ -76,18 +80,17 @@ public class GameLoop implements EventHandler<ActionEvent> {
 			}
 		}
 		for(int i = 0; i < Map.diskSize(); i++) {
-			int startSize = Map.diskSize();
-			//the things still equal when they shouldn't for redirect
+			Disk disk = Map.disks()[i];
 			Map.disks()[i].delayCheck();
 			
-			if(Map.diskSize() == startSize) {
+			if(disk == Map.disks()[i]) {
 				if(Map.disks()[i].delay().done()) {
 					Main.gc().fillOval(Map.disks()[i].coord().x() - Map.disks()[i].currentRadius(), Map.disks()[i].coord().y() - Map.disks()[i].currentRadius(),
 							Map.disks()[i].currentRadius() * 2, Map.disks()[i].currentRadius() * 2);
 				}
 			}
 			else {
-				i -= 1;
+				i --;
 			}
 		}
 		

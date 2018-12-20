@@ -15,12 +15,14 @@ public class Delay {
 	
 	public boolean delayCheck() {
 		boolean done = false;
-		if(this.framesPassed() >= this.dur()) {
-			done = true;
-		}
-		else {
+		
+		if(this.framesPassed() < this.dur()) {
 			this.increase();
 		}
+		else if(this.framesPassed() == this.dur()) {
+			done = true;
+		}
+		
 		return done;
 	}
 	
