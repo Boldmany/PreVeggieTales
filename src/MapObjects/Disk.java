@@ -67,10 +67,10 @@ public class Disk {
 		}
 	}
 	
-	public Disk(Vector vec, Vector maxSpeed, double radiusChange, Delay LifeSpan, boolean redirect) {
+	public Disk(Vector vec, Vector maxSpeed, double degreeChange, Delay LifeSpan, boolean redirect) {
 		this.setVec(vec);
 		this.setMaxSpeed(maxSpeed);
-		this.setRadiusChange(radiusChange);
+		this.setDegreeChange(degreeChange);
 		this.setLifeSpan(LifeSpan);
 		this.setRedirect(redirect);
 	}

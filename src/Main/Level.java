@@ -51,6 +51,9 @@ public class Level {
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
 			String line;
 			while((line = bufferedReader.readLine()) != null) {
+				if(line.equals("")) {
+					continue;
+				}
 				String[] object = line.split("/");
 				if(object[0].equals("laser")) {
 					Laser laser = new Laser(Integer.parseInt(object[1]), new Vector(Double.parseDouble(object[2]), Double.parseDouble(object[3])), 

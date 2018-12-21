@@ -21,6 +21,8 @@ If disk
 
 	double x velocity
 	double y velocity
+	double the max speed in the x direction before changing x direction(put 0 if you want it to move left or right)
+	double the max speed in the y direction before changing y direction(put 0 if you want it to move up or down)
 
 	If the previous disk had followed a cuircular path, if not just set this to 0
 	double how many degrees its going to shift every frame(this can be negative)
