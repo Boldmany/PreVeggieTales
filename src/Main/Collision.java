@@ -19,7 +19,7 @@ public class Collision {
 	public static void diskToWall(Disk disk) {
 		if(disk.maxSpeed().x() != 0) {
 			if(disk.dir().y() == 1) {
-				if(disk.coord().y() - disk.currentRadius() >= Main.canvas().getHeight()) {
+				if(disk.coord().y() - disk.currentRadius() > Main.canvas().getHeight()) {
 					disk.death().setDone(true);
 				}
 			}
@@ -31,7 +31,7 @@ public class Collision {
 		}
 		if(disk.maxSpeed().y() != 0) {
 			if(disk.dir().x() == 1) {
-				if(disk.coord().x() - disk.currentRadius() >= Main.canvas().getWidth()) {
+				if(disk.coord().x() - disk.currentRadius() > Main.canvas().getWidth()) {
 					disk.death().setDone(true);
 				}
 			}

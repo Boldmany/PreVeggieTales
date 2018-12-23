@@ -81,9 +81,9 @@ public class Level {
 						boolean loop = true;
 						while (loop && (line = bufferedReader.readLine()) != null) {
 							object = line.split("/");
-							Disk redirected = new Disk(new Vector(Double.parseDouble(object[0]), Double.parseDouble(object[1])), 
-									new Vector(Double.parseDouble(object[2]), Double.parseDouble(object[3])),  Double.parseDouble(object[4]),
-									new Delay(Integer.parseInt(object[5])), 
+							Disk redirected = new Disk(new Vector(Double.parseDouble(object[1]), Double.parseDouble(object[2])), 
+									new Vector(Double.parseDouble(object[3]), Double.parseDouble(object[4])),  Double.parseDouble(object[5]),
+									new Delay(Integer.parseInt(object[6])), 
 									Boolean.parseBoolean(object[6]));
 							this.redirect()[this.redirectSize()] = redirected;
 							this.setRedirectSize(this.redirectSize() + 1);

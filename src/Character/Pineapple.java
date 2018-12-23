@@ -12,7 +12,7 @@ public class Pineapple {
 	private Image img = new Image("file:resources/pineapple.png");
 	private Rotate rotate = new Rotate(0,0,0);
 	private Vector dir = new Vector(0,0);
-	private Delay dash = new Delay(3);
+	private Delay dash = new Delay(4);
 	private Delay cooldown = new Delay(20);
 	private double speed;
 	

@@ -180,6 +180,7 @@ public class Disk {
 					Map.levels()[Map.playLevel()].redirect()[Map.levels()[Map.playLevel()].currentRedirect()].lifeSpan(),
 					this.safe(), Map.levels()[Map.playLevel()].redirect()[Map.levels()[Map.playLevel()].currentRedirect()].redirect());
 			disk.setCurrentRadius(disk.finalRadius());
+			Map.levels()[Map.playLevel()].setCurrentRedirect(Map.levels()[Map.playLevel()].currentRedirect() + 1);
 			
 			if(disk.circularMotion()) {
 				disk.coord().setX(disk.circularPath().getCenterX() + (disk.circularPath().getRadius() * Math.cos(Math.toRadians(disk.degree()))));
