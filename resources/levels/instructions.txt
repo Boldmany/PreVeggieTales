@@ -1,71 +1,88 @@
 split information for one object by "/" and add a new line for a new object
-Note: type "true" or "false" for boolean demands
 
-First: type "laser" or "disk" for the respective object you want to create
+There will be a list of commands, you do not need to include all of them and you dont have to call them in order
+(if you dont include them it will be set to 0 or false)
+
+
+First: type "laser" or "disk" for the respective object you want to create along with the frame to spawn it
 
 If "laser"
-	int for the frame this should spawn at
-	double x coordinate
+
+	"coord"
+	double x coordiante
 	double y coordinate
+
+	"vec"
 	double x velocity
 	double y velocity
+
+	"width"
 	double width
-	double hight
+
+	"height"
+	double height
+
+	"delay"
 	int how long the warning should last
-	int how long the laser should last(if until collision, set this to 0)
-	direction(1:top to bottom, 2:right to left, 3:bottom to top, 4:left to right)
+
+	"lifeSpan"
+	int how long the laser should last
+
+	"dir"
+	int the direction(1:top to bottom, 2:right to left, 3:bottom to top, 4:left to right)
 
 If disk
-	
-	If The previous disk has redirect as true, do the following:
 
-	double x velocity
-	double y velocity
-	double the max speed in the x direction before changing x direction(put 0 if you want it to move left or right)
-	double the max speed in the y direction before changing y direction(put 0 if you want it to move up or down)
-
-	If the previous disk had followed a cuircular path, if not just set this to 0
-	double how many degrees its going to shift every frame(this can be negative)
-
-	int how long the disk should last(if until collision, set this to 0)
-	boolean redirect
-	
-	If The previous disk has redirect as false do the following or if this is the first disk you are making:
-
-	int for the frame this should spawn at
-	double x coordinate
+	"coord"
+	double x coordiante
 	double y coordinate
+	
+	"vec"
 	double x velocity
 	double y velocity
-	double the max speed in the x direction before changing x direction(put 0 if you want it to move left or right)
-	double the max speed in the y direction before changing y direction(put 0 if you want it to move up or down)
+
+	"maxSpeed"
+	double max speed in the x direction
+	double max speed in the y direction
+
+	"finalRadius"
 	double final radius
-	double radius change(if you want it to instantly be the same size as the final radius, set this to 0)
-	boolean if the disk follows a circular path
+	double how much the radius should increase every frame(set this to 0 if you want it to be the same instantly)
 	
-	if circular path is false, then set the next few thing to zero
-	double degree the disk starts on the path
-	double how many degrees its going to shift every frame(this can be negative)
-	double x coordinate of the circle
-	double y coordinate of the circle
-	double radius of the circle
+	"circularMotion"
+	double the degree in the circle you start at
+	double the amount of degrees you change every frame
+	double x coordinate of the circular path
+	double y coordinate of the circular path
+	double raius of the circular path
 
+	"delay"
 	int how long the warning should last
-	int how long the disk should last(if until collision, set this to 0)
-	boolean whether the circle is a safe zone or not
 
-	boolean redirect (the instructions will be covered over the next few lines)
-		becuase I suck at coding this is the best I can do
-		Assume you want to change the direction of a this traveling disk mid way, you cant
-		but here is how you can
-		set the life span to how far you want it to travel
-		so once it dies, spawn a new one ontop of it with new velocities
-		smart...
+	"lifeSpan"
+	int how long the disk should last	
 
-Note: this doesn't have to be in oreder of spawn time, I will do that in the code, just remeber that 
-redirected disks should come one after the other.
+	"safe"(this will automatically set it to true)
 
-Just try to make the spawn times in order for future editing conveniences 
+	"redirect"(this will automatically set it to true, then use the commands under to redirect it)
+
+		"vec"
+		double x velocity
+		double y velocity
+
+		"maxSpeed"
+		double max speed in the x direction
+		double max speed in the y direction
+
+		"degreeChange"
+		double the amount of degrees you change every frame
+
+		"lifeSpan"
+		int how long the disk should last
+
+		"redirect"(this will automatically set it to true, recursion)
+			
+	
 		
 		
 	

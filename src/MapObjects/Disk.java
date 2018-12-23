@@ -35,7 +35,8 @@ public class Disk {
 	private int pathIndex;
 	private int safeDiskIndex;
 	
-	public Disk(int spawn, Vector coord, Vector vec, Vector maxSpeed, double finalRadius, double radiusChange,  boolean circularMotion, double degree, double degreeChange,  Circle circularPath, Delay delay, Delay lifeSpan, boolean safe, boolean redirect) {
+	public Disk(int spawn, Vector coord, Vector vec, Vector maxSpeed, double finalRadius, double radiusChange,  
+			boolean circularMotion, double degree, double degreeChange, Circle circularPath, Delay delay, Delay lifeSpan, boolean safe, boolean redirect) {
 		this.setSpawn(spawn);
 		this.setCoord(coord);
 		this.setVec(vec);
@@ -67,11 +68,11 @@ public class Disk {
 		}
 	}
 	
-	public Disk(Vector vec, Vector maxSpeed, double degreeChange, Delay LifeSpan, boolean redirect) {
+	public Disk(Vector vec, Vector maxSpeed, double degreeChange, Delay lifeSpan, boolean redirect) {
 		this.setVec(vec);
 		this.setMaxSpeed(maxSpeed);
 		this.setDegreeChange(degreeChange);
-		this.setLifeSpan(LifeSpan);
+		this.setLifeSpan(lifeSpan);
 		this.setRedirect(redirect);
 	}
 	

@@ -56,38 +56,111 @@ public class Level {
 				}
 				String[] object = line.split("/");
 				if(object[0].equals("laser")) {
-					Laser laser = new Laser(Integer.parseInt(object[1]), new Vector(Double.parseDouble(object[2]), Double.parseDouble(object[3])), 
-							new Vector(Double.parseDouble(object[4]), Double.parseDouble(object[5])), Double.parseDouble(object[6]), Double.parseDouble(object[7]),
-							new Delay(Integer.parseInt(object[8])), new Delay(Integer.parseInt(object[9])), Integer.parseInt(object[10]));
+					Laser laser = new Laser(Integer.parseInt(object[1]), new Vector(0 ,0), new Vector(0, 0), 0, 0, new Delay(0), new Delay(0), 1);
+					while((line = bufferedReader.readLine()) != null) {
+						String[] change = line.split("/");
+						if(change[0].equals("coord")) {
+							laser.setCoord(new Vector(Double.parseDouble(change[1]), Double.parseDouble(change[2])));
+						}
+						else if(change[0].equals("vec")) {
+							laser.setVec(new Vector(Double.parseDouble(change[1]), Double.parseDouble(change[2])));
+						}
+						else if(change[0].equals("width")) {
+							laser.setWidth(Double.parseDouble(change[1]));
+						}
+						else if(change[0].equals("height")) {
+							laser.setHeight(Double.parseDouble(change[1]));
+						}
+						else if(change[0].equals("delay")) {
+							laser.delay().setDur(Integer.parseInt(change[1]));
+						}
+						else if(change[0].equals("lifeSpan")) {
+							laser.lifeSpan().setDur(Integer.parseInt(change[1]));
+						}
+						else if(change[0].equals("dir")) {
+							laser.setDir(Integer.parseInt(change[1]));
+						}
+						else {
+							break;
+						}
+					}
 					this.lasers()[this.laserSize()] = laser;
 					this.setLaserSize(this.laserSize() + 1);
 				}
-				else {
-					Disk disk = new Disk(Integer.parseInt(object[1]), new Vector(Double.parseDouble(object[2]), Double.parseDouble(object[3])),
-							new Vector(Double.parseDouble(object[4]), Double.parseDouble(object[5])),
-							new Vector(Double.parseDouble(object[6]), Double.parseDouble(object[7])),
-							Double.parseDouble(object[8]), Double.parseDouble(object[9]),
-							Boolean.parseBoolean(object[10]), Double.parseDouble(object[11]), Double.parseDouble(object[12]),
-							new Circle(Double.parseDouble(object[13]), Double.parseDouble(object[14]), Double.parseDouble(object[15])),
-							new Delay(Integer.parseInt(object[16])), new Delay(Integer.parseInt(object[17])),
-							Boolean.parseBoolean(object[18]), Boolean.parseBoolean(object[19]));
-					if(disk.circularMotion()) {
-						disk.coord().setX(disk.circularPath().getCenterX() + (disk.circularPath().getRadius() * Math.cos(Math.toRadians(disk.degree()))));
-						disk.coord().setY(disk.circularPath().getCenterY() + (disk.circularPath().getRadius() * Math.sin(Math.toRadians(disk.degree()))));
+				else if(object[0].equals("disk")){
+					Disk disk = new Disk(Integer.parseInt(object[1]), new Vector(0, 0), new Vector(0, 0), new Vector(0, 0), 0, 0, false, 0, 0,  new Circle(0, 0, 0), new Delay(0), new Delay(0), false, false);
+					while((line = bufferedReader.readLine()) != null) {
+						String[] change = line.split("/");
+						if(change[0].equals("coord")) {
+							disk.setCoord(new Vector(Double.parseDouble(change[1]), Double.parseDouble(change[2])));
+						}
+						else if(change[0].equals("vec")) {
+							disk.setVec(new Vector(Double.parseDouble(change[1]), Double.parseDouble(change[2])));
+						}
+						else if(change[0].equals("maxSpeed")) {
+							disk.setMaxSpeed(new Vector(Double.parseDouble(change[1]), Double.parseDouble(change[2])));
+						}
+						else if(change[0].equals("finalRadius")) {
+							disk.setFinalRadius(Double.parseDouble(change[1]));
+							disk.setRadiusChange(Double.parseDouble(change[2]));
+						}
+						else if(change[0].equals("circularMotion")) {
+							disk.setCircularMotion(true);
+							disk.setDegree(Double.parseDouble(change[1]));
+							disk.setDegreeChange(Double.parseDouble(change[2]));
+							disk.setCircularPath(new Circle(Double.parseDouble(change[3]), Double.parseDouble(change[4]), Double.parseDouble(change[5])));
+							
+							disk.coord().setX(disk.circularPath().getCenterX() + (disk.circularPath().getRadius() * Math.cos(Math.toRadians(disk.degree()))));
+							disk.coord().setY(disk.circularPath().getCenterY() + (disk.circularPath().getRadius() * Math.sin(Math.toRadians(disk.degree()))));
+						}
+						else if(change[0].equals("delay")) {
+							disk.delay().setDur(Integer.parseInt(change[1]));
+						}
+						else if(change[0].equals("lifeSpan")) {
+							disk.lifeSpan().setDur(Integer.parseInt(change[1]));
+						}
+						else if(change[0].equals("safe")) {
+							disk.setSafe(true);
+						}
+						else if(change[0].equals("redirect")) {
+							disk.setRedirect(true);
+							break;
+						}
+						else {
+							break;
+						}
 					}
 					this.disks()[this.diskSize()] = disk;
 					this.setDiskSize(this.diskSize() + 1);
 					if(disk.redirect()) {
 						boolean loop = true;
-						while (loop && (line = bufferedReader.readLine()) != null) {
-							object = line.split("/");
-							Disk redirected = new Disk(new Vector(Double.parseDouble(object[1]), Double.parseDouble(object[2])), 
-									new Vector(Double.parseDouble(object[3]), Double.parseDouble(object[4])),  Double.parseDouble(object[5]),
-									new Delay(Integer.parseInt(object[6])), 
-									Boolean.parseBoolean(object[6]));
+						while (loop) {
+							Disk redirected = new Disk(new Vector(0, 0), new Vector(0, 0), 0, new Delay(0), false);
+							while((line = bufferedReader.readLine()) != null) {
+								String[] change = line.split("/");
+								if(change[0].equals("vec")) {
+									redirected.setVec(new Vector(Double.parseDouble(change[1]), Double.parseDouble(change[2])));
+								}
+								else if(change[0].equals("maxSpeed")) {
+									redirected.setMaxSpeed(new Vector(Double.parseDouble(change[1]), Double.parseDouble(change[2])));
+								}
+								else if(change[0].equals("degreeChange")) {
+									redirected.setDegreeChange(Double.parseDouble(change[1]));
+								}
+								else if(change[0].equals("lifeSpan")) {
+									redirected.lifeSpan().setDur(Integer.parseInt(change[1]));
+								}
+								else if(change[0].equals("redirect")) {
+									redirected.setRedirect(true);
+									break;
+								}
+								else {
+									break;
+								}
+							}
 							this.redirect()[this.redirectSize()] = redirected;
 							this.setRedirectSize(this.redirectSize() + 1);
-							loop = Boolean.parseBoolean(object[5]);
+							loop = redirected.redirect();
 						}
 					}
 				}
