@@ -68,8 +68,9 @@ public class Disk {
 		}
 	}
 	
-	public Disk(Vector vec, Vector maxSpeed, double degreeChange, Delay lifeSpan, boolean redirect) {
+	public Disk(Vector vec, Vector maxSpeed, double radiusChange, double degreeChange, Delay lifeSpan, boolean redirect) {
 		this.setVec(vec);
+		this.setRadiusChange(radiusChange);
 		this.setMaxSpeed(maxSpeed);
 		this.setDegreeChange(degreeChange);
 		this.setLifeSpan(lifeSpan);
@@ -80,7 +81,7 @@ public class Disk {
 		
 		if(this.delay().delayCheck() && !this.delay().done()) {
 			this.delay().setDone(true); 
-			if(this.delay().dur() != 0) {
+			if(this.delay().dur() != 0 && !this.safe()) {
 				this.removeGhost();
 			}
 		}
@@ -112,7 +113,7 @@ public class Disk {
 		}
 		
 		if(this.delay().done() && this.lifeSpan().dur() != 0) {
-			if(this.currentRadius() == this.finalRadius()) {
+			if((this.currentRadius() == this.finalRadius()) || this.safe()) {
 				if(this.lifeSpan().delayCheck()) {
 					if(this.redirect() || this.safe()) {
 						this.death().setDone(true);
@@ -175,8 +176,12 @@ public class Disk {
 	
 	public void remove() {
 		if(this.redirect()) {
+			//int spawn, Vector coord, Vector vec, Vector maxSpeed, double finalRadius, double radiusChange,  
+			//boolean circularMotion, double degree, double degreeChange, Circle circularPath, Delay delay, Delay lifeSpan, boolean safe, boolean redirect
 			Disk disk = new Disk(0, this.coord(), Map.levels()[Map.playLevel()].redirect()[Map.levels()[Map.playLevel()].currentRedirect()].vec(), 
-					Map.levels()[Map.playLevel()].redirect()[Map.levels()[Map.playLevel()].currentRedirect()].maxSpeed(), this.finalRadius(), 0, this.circularMotion(), this.degree(), 
+					Map.levels()[Map.playLevel()].redirect()[Map.levels()[Map.playLevel()].currentRedirect()].maxSpeed(), this.finalRadius(), 
+					Map.levels()[Map.playLevel()].redirect()[Map.levels()[Map.playLevel()].currentRedirect()].radiusChange(), 
+					this.circularMotion(), this.degree(), 
 					Map.levels()[Map.playLevel()].redirect()[Map.levels()[Map.playLevel()].currentRedirect()].degreeChange(), this.circularPath(), new Delay(0),
 					Map.levels()[Map.playLevel()].redirect()[Map.levels()[Map.playLevel()].currentRedirect()].lifeSpan(),
 					this.safe(), Map.levels()[Map.playLevel()].redirect()[Map.levels()[Map.playLevel()].currentRedirect()].redirect());
@@ -187,9 +192,8 @@ public class Disk {
 				disk.coord().setX(disk.circularPath().getCenterX() + (disk.circularPath().getRadius() * Math.cos(Math.toRadians(disk.degree()))));
 				disk.coord().setY(disk.circularPath().getCenterY() + (disk.circularPath().getRadius() * Math.sin(Math.toRadians(disk.degree()))));
 			}
-			if(this.safe()) {
+			if(disk.safe()) {
 				Map.safeDisks()[Map.safeDiskSize()] = disk;
-				Map.setSafeDiskSize(Map.safeDiskSize() + 1);
 			}
 			else {
 				disk.setDiskIndex(Map.diskSize());
@@ -197,19 +201,20 @@ public class Disk {
 				Map.setDiskSize(Map.diskSize() + 1);
 			}
 		}
-		
-		if(!this.safe()) {
-			Map.setDiskSize(Map.diskSize() - 1);
-			Map.disks()[Map.diskSize()].setDiskIndex(this.diskIndex()); 
-			Map.disks()[this.diskIndex()] = Map.disks()[Map.diskSize()];
-			Map.disks()[Map.diskSize()] = null;
-		}
 		else {
-			Map.setSafeDiskSize(Map.safeDiskSize() - 1);
-			Map.safeDisks()[Map.safeDiskSize()].setSafeDiskIndex(this.safeDiskIndex()); 
-			Map.safeDisks()[this.safeDiskIndex()] = Map.safeDisks()[Map.safeDiskSize()];
-			Map.safeDisks()[Map.safeDiskSize()] = null;
-		}	
+			if(!this.safe()) {
+				Map.setDiskSize(Map.diskSize() - 1);
+				Map.disks()[Map.diskSize()].setDiskIndex(this.diskIndex()); 
+				Map.disks()[this.diskIndex()] = Map.disks()[Map.diskSize()];
+				Map.disks()[Map.diskSize()] = null;
+			}
+			else {
+				Map.setSafeDiskSize(Map.safeDiskSize() - 1);
+				Map.safeDisks()[Map.safeDiskSize()].setSafeDiskIndex(this.safeDiskIndex()); 
+				Map.safeDisks()[this.safeDiskIndex()] = Map.safeDisks()[Map.safeDiskSize()];
+				Map.safeDisks()[Map.safeDiskSize()] = null;
+			}
+		}
 	}
 	
 	public void removeGhost() {

@@ -135,7 +135,7 @@ public class Level {
 					if(disk.redirect()) {
 						boolean loop = true;
 						while (loop) {
-							Disk redirected = new Disk(new Vector(0, 0), new Vector(0, 0), 0, new Delay(0), false);
+							Disk redirected = new Disk(new Vector(0, 0), new Vector(0, 0), 0, 0, new Delay(0), false);
 							while((line = bufferedReader.readLine()) != null) {
 								String[] change = line.split("/");
 								if(change[0].equals("vec")) {
@@ -149,6 +149,9 @@ public class Level {
 								}
 								else if(change[0].equals("lifeSpan")) {
 									redirected.lifeSpan().setDur(Integer.parseInt(change[1]));
+								}
+								else if(change[0].equals("finalRadius")) {
+								  redirected.setRadiusChange(Double.parseDouble(change[1]));
 								}
 								else if(change[0].equals("redirect")) {
 									redirected.setRedirect(true);
