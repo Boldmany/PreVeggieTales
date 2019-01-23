@@ -70,8 +70,8 @@ public class Disk {
 	
 	public Disk(Vector vec, Vector maxSpeed, double radiusChange, double degreeChange, Delay lifeSpan, boolean redirect) {
 		this.setVec(vec);
-		this.setRadiusChange(radiusChange);
 		this.setMaxSpeed(maxSpeed);
+		this.setRadiusChange(radiusChange);
 		this.setDegreeChange(degreeChange);
 		this.setLifeSpan(lifeSpan);
 		this.setRedirect(redirect);
@@ -176,16 +176,14 @@ public class Disk {
 	
 	public void remove() {
 		if(this.redirect()) {
-			//int spawn, Vector coord, Vector vec, Vector maxSpeed, double finalRadius, double radiusChange,  
-			//boolean circularMotion, double degree, double degreeChange, Circle circularPath, Delay delay, Delay lifeSpan, boolean safe, boolean redirect
 			Disk disk = new Disk(0, this.coord(), Map.levels()[Map.playLevel()].redirect()[Map.levels()[Map.playLevel()].currentRedirect()].vec(), 
 					Map.levels()[Map.playLevel()].redirect()[Map.levels()[Map.playLevel()].currentRedirect()].maxSpeed(), this.finalRadius(), 
-					Map.levels()[Map.playLevel()].redirect()[Map.levels()[Map.playLevel()].currentRedirect()].radiusChange(), 
-					this.circularMotion(), this.degree(), 
-					Map.levels()[Map.playLevel()].redirect()[Map.levels()[Map.playLevel()].currentRedirect()].degreeChange(), this.circularPath(), new Delay(0),
+					Map.levels()[Map.playLevel()].redirect()[Map.levels()[Map.playLevel()].currentRedirect()].radiusChange(),
+					this.circularMotion(), this.degree(), Map.levels()[Map.playLevel()].redirect()[Map.levels()[Map.playLevel()].currentRedirect()].degreeChange(),
+					this.circularPath(), new Delay(0),
 					Map.levels()[Map.playLevel()].redirect()[Map.levels()[Map.playLevel()].currentRedirect()].lifeSpan(),
 					this.safe(), Map.levels()[Map.playLevel()].redirect()[Map.levels()[Map.playLevel()].currentRedirect()].redirect());
-			disk.setCurrentRadius(disk.finalRadius());
+			disk.setCurrentRadius(this.currentRadius());
 			Map.levels()[Map.playLevel()].setCurrentRedirect(Map.levels()[Map.playLevel()].currentRedirect() + 1);
 			
 			if(disk.circularMotion()) {
@@ -193,7 +191,9 @@ public class Disk {
 				disk.coord().setY(disk.circularPath().getCenterY() + (disk.circularPath().getRadius() * Math.sin(Math.toRadians(disk.degree()))));
 			}
 			if(disk.safe()) {
+				disk.setSafeZone(new SafeZone(disk));
 				Map.safeDisks()[Map.safeDiskSize()] = disk;
+				Map.setSafeDiskSize(Map.safeDiskSize() + 1);
 			}
 			else {
 				disk.setDiskIndex(Map.diskSize());
@@ -201,19 +201,18 @@ public class Disk {
 				Map.setDiskSize(Map.diskSize() + 1);
 			}
 		}
+		
+		if(!this.safe()) {
+			Map.setDiskSize(Map.diskSize() - 1);
+			Map.disks()[Map.diskSize()].setDiskIndex(this.diskIndex()); 
+			Map.disks()[this.diskIndex()] = Map.disks()[Map.diskSize()];
+			Map.disks()[Map.diskSize()] = null;
+		}
 		else {
-			if(!this.safe()) {
-				Map.setDiskSize(Map.diskSize() - 1);
-				Map.disks()[Map.diskSize()].setDiskIndex(this.diskIndex()); 
-				Map.disks()[this.diskIndex()] = Map.disks()[Map.diskSize()];
-				Map.disks()[Map.diskSize()] = null;
-			}
-			else {
-				Map.setSafeDiskSize(Map.safeDiskSize() - 1);
-				Map.safeDisks()[Map.safeDiskSize()].setSafeDiskIndex(this.safeDiskIndex()); 
-				Map.safeDisks()[this.safeDiskIndex()] = Map.safeDisks()[Map.safeDiskSize()];
-				Map.safeDisks()[Map.safeDiskSize()] = null;
-			}
+			Map.setSafeDiskSize(Map.safeDiskSize() - 1);
+			Map.safeDisks()[Map.safeDiskSize()].setSafeDiskIndex(this.safeDiskIndex()); 
+			Map.safeDisks()[this.safeDiskIndex()] = Map.safeDisks()[Map.safeDiskSize()];
+			Map.safeDisks()[Map.safeDiskSize()] = null;
 		}
 	}
 	
