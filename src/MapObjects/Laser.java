@@ -15,6 +15,7 @@ public class Laser {
 	private int laserIndex;
 	private int ghostIndex;
 	private int pathIndex;
+	private boolean showSafe = false;
 	
 	
 	public Laser(int spawn, Vector coord, Vector vec, double width, double height, Delay delay, Delay lifeSpan, int dir) {
@@ -89,9 +90,11 @@ public class Laser {
 		Map.ghostLasers()[Map.ghostLaserSize()] = null;
 		
 		for(int i = 0; i < Map.safeDiskSize(); i++) {
-			Map.safeDisks()[i].safeZone().setPathSize(Map.safeDisks()[i].safeZone().pathSize() - 1);
-			Map.safeDisks()[i].safeZone().paths()[this.pathIndex()] = Map.safeDisks()[i].safeZone().paths()[Map.safeDisks()[i].safeZone().pathSize()];
-			Map.safeDisks()[i].safeZone().paths()[Map.safeDisks()[i].safeZone().pathSize()] = null;
+			if(!this.showSafe()) {
+				Map.safeDisks()[i].safeZone().setPathSize(Map.safeDisks()[i].safeZone().pathSize() - 1);
+				Map.safeDisks()[i].safeZone().paths()[this.pathIndex()] = Map.safeDisks()[i].safeZone().paths()[Map.safeDisks()[i].safeZone().pathSize()];
+				Map.safeDisks()[i].safeZone().paths()[Map.safeDisks()[i].safeZone().pathSize()] = null;
+			}
 		}
 	}
 	
@@ -221,5 +224,13 @@ public class Laser {
 
 	public void setSpawn(int spawn) {
 		this.spawn = spawn;
+	}
+
+	public boolean showSafe() {
+		return showSafe;
+	}
+
+	public void setShowSafe(boolean showSafe) {
+		this.showSafe = showSafe;
 	}
 }

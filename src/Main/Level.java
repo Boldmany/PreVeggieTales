@@ -18,34 +18,33 @@ import MapObjects.*;
 import javafx.scene.shape.Circle;
 
 public class Level {
-    
+
 	private Clip clip;
 	private int frames = 0;
-    private Laser[] lasers = new Laser[3000];
-    private int laserSize = 0;
-    private int currentLaser = 0;
-    private Disk[] disks = new Disk[3000];
-    private int diskSize = 0;
-    private int currentDisk = 0;
-    private Disk[] redirect = new Disk[3000];
-    private int redirectSize = 0;
-    private int currentRedirect = 0;
+	private Laser[] lasers = new Laser[3000];
+	private int laserSize = 0;
+	private int currentLaser = 0;
+	private Disk[] disks = new Disk[3000];
+	private int diskSize = 0;
+	private int currentDisk = 0;
+	private Disk[] redirect = new Disk[3000];
+	private int redirectSize = 0;
 
-    public Level(int level) {
-    	File soundFile = new File("resources/levels/level" + level + "/levelSong.wav");
-    	this.levelReader("resources/levels/level" + level + "/levelEditor.txt");
-        try {
-        	this.setClip(AudioSystem.getClip());
+	public Level(int level) {
+		File soundFile = new File("resources/levels/level" + level + "/levelSong.wav");
+		this.levelReader("resources/levels/level" + level + "/levelEditor.txt");
+		try {
+			this.setClip(AudioSystem.getClip());
 			AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
 			this.clip().open(audioIn);
 		}
-        catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+		catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
 			e.printStackTrace();
 		}
-    }
-    
-    public void levelReader(String filePath) {
-    	
+	}
+
+	public void levelReader(String filePath) {
+
 		try {
 			FileReader fileReader = new FileReader(filePath);
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -109,7 +108,7 @@ public class Level {
 							disk.setDegree(Double.parseDouble(change[1]));
 							disk.setDegreeChange(Double.parseDouble(change[2]));
 							disk.setCircularPath(new Circle(Double.parseDouble(change[3]), Double.parseDouble(change[4]), Double.parseDouble(change[5])));
-							
+
 							disk.coord().setX(disk.circularPath().getCenterX() + (disk.circularPath().getRadius() * Math.cos(Math.toRadians(disk.degree()))));
 							disk.coord().setY(disk.circularPath().getCenterY() + (disk.circularPath().getRadius() * Math.sin(Math.toRadians(disk.degree()))));
 						}
@@ -122,6 +121,9 @@ public class Level {
 						else if(change[0].equals("safe")) {
 							disk.setSafe(true);
 						}
+						else if(change[0].equals("showSafe")) {
+							disk.setShowSafe(true);
+						}
 						else if(change[0].equals("redirect")) {
 							disk.setRedirect(true);
 							break;
@@ -130,9 +132,16 @@ public class Level {
 							break;
 						}
 					}
+					if(disk.showSafe()) {
+						Laser laser = new Laser(disk.spawn(), new Vector(0, 0), new Vector(0, -1000), 1000, 0, new Delay(disk.delay().dur() - 1), new Delay(1), 1);
+						laser.setShowSafe(true);
+						this.lasers()[this.laserSize()] = laser;
+						this.setLaserSize(this.laserSize() + 1);
+					}
 					this.disks()[this.diskSize()] = disk;
 					this.setDiskSize(this.diskSize() + 1);
 					if(disk.redirect()) {
+						disk.setRedirectIndex(this.redirectSize());
 						boolean loop = true;
 						while (loop) {
 							Disk redirected = new Disk(new Vector(0, 0), new Vector(0, 0), 0, 0, new Delay(0), false);
@@ -151,7 +160,7 @@ public class Level {
 									redirected.lifeSpan().setDur(Integer.parseInt(change[1]));
 								}
 								else if(change[0].equals("finalRadius")) {
-								  redirected.setRadiusChange(Double.parseDouble(change[1]));
+									redirected.setRadiusChange(Double.parseDouble(change[1]));
 								}
 								else if(change[0].equals("redirect")) {
 									redirected.setRedirect(true);
@@ -164,6 +173,9 @@ public class Level {
 							this.redirect()[this.redirectSize()] = redirected;
 							this.setRedirectSize(this.redirectSize() + 1);
 							loop = redirected.redirect();
+							if(loop) {
+								redirected.setRedirectIndex(this.redirectSize());
+							}
 						}
 					}
 				}
@@ -181,7 +193,7 @@ public class Level {
 						return 0;
 					}
 				}
-				
+
 			});
 			Arrays.sort(disks, new Comparator<Disk>() {
 
@@ -194,54 +206,54 @@ public class Level {
 						return 0;
 					}
 				}
-				
+
 			});
 		} 
 		catch (IOException e) {
 			e.printStackTrace();
 		}
-    }
-    
-    public void delayCheck() {
-    	if(this.currentLaser() < this.laserSize()) {
-    		for(int i = this.currentLaser(); i < this.laserSize(); i++) {
-    			if(this.frames() == this.lasers()[i].spawn()) {
-    				this.createLaser(this.lasers()[i]);
-    				this.setCurrentLaser(this.currentLaser() + 1);
-    			}
-    			else {
-    				break;
-    			}
+	}
+
+	public void delayCheck() {
+		if(this.currentLaser() < this.laserSize()) {
+			for(int i = this.currentLaser(); i < this.laserSize(); i++) {
+				if(this.frames() == this.lasers()[i].spawn()) {
+					this.createLaser(this.lasers()[i]);
+					this.setCurrentLaser(this.currentLaser() + 1);
+				}
+				else {
+					break;
+				}
 			}
-    	}
-    	if(this.currentDisk() < this.diskSize()) {
-    		for(int i = this.currentDisk(); i < this.diskSize(); i++) {
-    			if(this.frames() == this.disks()[i].spawn()) {
-    				this.createDisk(this.disks()[i]);
-    				this.setCurrentDisk(this.currentDisk() + 1);
-    			}
-    			else {
-    				break;
-    			}
+		}
+		if(this.currentDisk() < this.diskSize()) {
+			for(int i = this.currentDisk(); i < this.diskSize(); i++) {
+				if(this.frames() == this.disks()[i].spawn()) {
+					this.createDisk(this.disks()[i]);
+					this.setCurrentDisk(this.currentDisk() + 1);
+				}
+				else {
+					break;
+				}
 			}
-    	}
-    	this.setFrames(this.frames() + 1);
-    }
-    
-    public void createLaser(Laser laser) {
-    	laser.setLaserIndex(Map.laserSize());
-    	Map.lasers()[laser.laserIndex()] = laser;
-    	Map.setLaserSize(Map.laserSize() + 1);
-    	if(laser.delay().dur() != 0) {
-    		laser.setGhostIndex(Map.ghostLaserSize());
+		}
+		this.setFrames(this.frames() + 1);
+	}
+
+	public void createLaser(Laser laser) {
+		laser.setLaserIndex(Map.laserSize());
+		Map.lasers()[laser.laserIndex()] = laser;
+		Map.setLaserSize(Map.laserSize() + 1);
+		if(laser.delay().dur() != 0) {
+			laser.setGhostIndex(Map.ghostLaserSize());
 			Laser warning = new Laser(new Vector(laser.coord().x(), laser.coord().y()), laser.width(), laser.height(), laser.dir());
 			Map.ghostLasers()[laser.ghostIndex()] = warning;
 			Map.setGhostLaserSize(Map.ghostLaserSize() + 1);
-    	}
-    }
-    
-    public void createDisk(Disk disk) {
-    	if(!disk.safe()) {
+		}
+	}
+
+	public void createDisk(Disk disk) {
+		if(!disk.safe()) {
 			disk.setDiskIndex(Map.diskSize());
 			Map.disks()[Map.diskSize()] = disk;
 			Map.setDiskSize(Map.diskSize() + 1);
@@ -265,9 +277,9 @@ public class Level {
 				disk.safeZone().rectangle(Map.ghostLasers()[i], true);
 			}
 		}
-    }
-    
-    
+	}
+
+
 	public Clip clip() {
 		return clip;
 	}
@@ -323,7 +335,6 @@ public class Level {
 	public void setCurrentLaser(int currentLaser) {
 		this.currentLaser = currentLaser;
 	}
-
 	public int currentDisk() {
 		return currentDisk;
 	}
@@ -346,13 +357,5 @@ public class Level {
 
 	public void setRedirectSize(int redirectSize) {
 		this.redirectSize = redirectSize;
-	}
-
-	public int currentRedirect() {
-		return currentRedirect;
-	}
-
-	public void setCurrentRedirect(int currentRedirect) {
-		this.currentRedirect = currentRedirect;
 	}
 }

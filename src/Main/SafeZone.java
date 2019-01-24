@@ -12,34 +12,43 @@ import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
 
 public class SafeZone {
-	
+
 	private static Group indication = new Group();
 	private static Group onTop = new Group();
 	private Path[] paths = new Path[3000];
 	private int pathSize = 0;
 	private Circle safeCircle;
-	
+	private boolean showSafe;
+
 	public SafeZone(Disk disk) {
 		this.setSafeCircle(new Circle(disk.coord().x(), disk.coord().y(), disk.currentRadius()));
+		this.setShowSafe(disk.showSafe());
 	}
-	
+
 	public void rectangle(Laser warning, boolean addToIndication) {
 		Path path = new Path();
 		Rectangle rect = new Rectangle(warning.coord().x(), warning.coord().y(), warning.width(), warning.height());
 		if(addToIndication) {
-			path = (Path) Path.intersect(this.safeCircle(), rect);
+			if(warning.showSafe()) {
+				path = (Path) Path.intersect(this.safeCircle(), rect);
+			}
+			else if(showSafe()) {
+				for(int i = 0; i < Map.safeDiskSize(); i++) {
+					path = (Path) Path.subtract(rect, Map.safeDisks()[i].safeZone().safeCircle());
+				}
+			}
 			path.setFill(Color.rgb(93,35,71)); 
 			this.paths()[pathSize()] = path;
 			warning.setPathIndex(pathSize());
 			this.setPathSize(pathSize() + 1);
-			indication.getChildren().add(path);
+			indication().getChildren().add(path);
 		}
 		else {
 			path.setFill(Color.rgb(252,31,109));
-			onTop.getChildren().add(path);
+			onTop().getChildren().add(path);
 		}
 	}
-	
+
 	public void circle(Disk warning, boolean addToIndication) {
 		Path path = new Path();
 		Circle circle = new Circle(warning.coord().x(), warning.coord().y(), warning.currentRadius());
@@ -49,19 +58,19 @@ public class SafeZone {
 			this.paths()[pathSize()] = path;
 			warning.setPathIndex(pathSize());
 			this.setPathSize(pathSize() + 1);
-			indication.getChildren().add(path);
+			indication().getChildren().add(path);
 		}
 		else {
 			path.setFill(Color.rgb(252,31,109));
-			onTop.getChildren().add(path);
+			onTop().getChildren().add(path);
 		}
 	}
 
 	public static void update() {
-		Main.group().getChildren().remove(indication);
-		Main.group().getChildren().remove(onTop);
-		indication.getChildren().clear();
-		onTop.getChildren().clear();
+		Main.group().getChildren().remove(indication());
+		Main.group().getChildren().remove(onTop());
+		indication().getChildren().clear();
+		onTop().getChildren().clear();
 		for(int i = 0; i < Map.safeDiskSize(); i++) {
 			Map.safeDisks()[i].safeZone().setPathSize(0);
 			Arrays.fill(Map.safeDisks()[i].safeZone().paths(), null);
@@ -83,17 +92,17 @@ public class SafeZone {
 				}
 			}
 		}
-		Main.group().getChildren().add(indication);
-		Main.group().getChildren().add(onTop);
+		Main.group().getChildren().add(indication());
+		Main.group().getChildren().add(onTop());
 		for(int i = 0; i < Map.playerSize(); i++) {
 			ImageView pineapple = new ImageView(Map.players()[i].img());
 			pineapple.setX(Map.players()[i].coord().x() - 13);
 			pineapple.setY(Map.players()[i].coord().y() - 25);
 			pineapple.getTransforms().add(Map.players()[i].rotate());
-			onTop.getChildren().add(pineapple);
+			onTop().getChildren().add(pineapple);
 		}
 	}
-	
+
 	public Path[] paths() {
 		return paths;
 	}
@@ -132,5 +141,13 @@ public class SafeZone {
 
 	public static void setIndication(Group indication) {
 		SafeZone.indication = indication;
+	}
+
+	public boolean showSafe() {
+		return showSafe;
+	}
+
+	public void setShowSafe(boolean showSafe) {
+		this.showSafe = showSafe;
 	}
 }

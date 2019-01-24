@@ -7,20 +7,20 @@ import javafx.event.EventHandler;
 import javafx.scene.paint.Color;
 
 public class GameLoop implements EventHandler<ActionEvent> {
-	
+
 	private static Color pink = Color.rgb(252,31,109);
 	private static Color warning = Color.rgb(93,35,71); 
 	public Pineapple man = new Pineapple(new Vector(500,300));
-	
+
 	public void handle(ActionEvent ev) {
-		
+
 		if(!Map.levels()[Map.playLevel()].clip().isRunning()) {
 			Map.levels()[Map.playLevel()].clip().start();
 		}
 		Map.levels()[Map.playLevel()].delayCheck();
-		
+
 		Main.gc().clearRect(0, 0, Main.canvas().getWidth(), Main.canvas().getHeight());
-		
+
 		if(Map.safeDiskSize() == 0) {
 			Main.gc().setFill(Color.BLACK);
 			Main.gc().fillRect(0, 0, Main.canvas().getWidth(), Main.canvas().getHeight());
@@ -33,12 +33,12 @@ public class GameLoop implements EventHandler<ActionEvent> {
 				Main.gc().setFill(warning);
 			}
 			Main.gc().fillRect(0, 0, Main.canvas().getWidth(), Main.canvas().getHeight());
-			
+
 			Main.gc().setFill(Color.BLACK);
 			for(int i = 0; i < Map.safeDiskSize(); i++) {
-				Disk disk = Map.safeDisks()[i];
+				int startSize = Map.safeDiskSize();
 				Map.safeDisks()[i].delayCheck();
-				if(Map.safeDisks()[i] != disk) {
+				if(Map.safeDiskSize() != startSize) {
 					i--;
 				}
 				else if(Map.safeDiskSize() != 0) {
@@ -50,7 +50,7 @@ public class GameLoop implements EventHandler<ActionEvent> {
 				}
 			}
 		}
-		
+
 		Main.gc().setFill(warning);
 		if(Map.safeDiskSize() == 0) {
 			for(int i = 0; i < Map.ghostLaserSize(); i++) {
@@ -62,13 +62,13 @@ public class GameLoop implements EventHandler<ActionEvent> {
 						Map.ghostDisks()[i].currentRadius() * 2, Map.ghostDisks()[i].currentRadius() * 2);
 			}
 		}
-		
+
 		Main.gc().setFill(pink);
 		for(int i = 0; i < Map.laserSize(); i++) {
 			Laser laser = Map.lasers()[i];
-			
+
 			Map.lasers()[i].delayCheck();
-			
+
 			if(laser == Map.lasers()[i]) {
 				if(Map.lasers()[i].delay().done()) {
 					Main.gc().fillRect(Map.lasers()[i].coord().x(), Map.lasers()[i].coord().y(),
@@ -82,7 +82,7 @@ public class GameLoop implements EventHandler<ActionEvent> {
 		for(int i = 0; i < Map.diskSize(); i++) {
 			Disk disk = Map.disks()[i];
 			Map.disks()[i].delayCheck();
-			
+
 			if(disk == Map.disks()[i]) {
 				if(Map.disks()[i].delay().done()) {
 					Main.gc().fillOval(Map.disks()[i].coord().x() - Map.disks()[i].currentRadius(), Map.disks()[i].coord().y() - Map.disks()[i].currentRadius(),
@@ -93,7 +93,7 @@ public class GameLoop implements EventHandler<ActionEvent> {
 				i --;
 			}
 		}
-		
+
 		for(int i = 0; i < Map.playerSize(); i++) {
 			Map.players()[i].move();
 			Main.gc().save();
