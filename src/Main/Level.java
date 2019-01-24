@@ -159,7 +159,7 @@ public class Level {
 								else if(change[0].equals("lifeSpan")) {
 									redirected.lifeSpan().setDur(Integer.parseInt(change[1]));
 								}
-								else if(change[0].equals("finalRadius")) {
+								else if(change[0].equals("radiusChange")) {
 									redirected.setRadiusChange(Double.parseDouble(change[1]));
 								}
 								else if(change[0].equals("redirect")) {

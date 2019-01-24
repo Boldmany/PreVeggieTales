@@ -3,11 +3,9 @@ coord/500/325
 finalRadius/600/-0.75
 lifeSpan/246
 safe
-
-disk/110
-coord/500/325
-finalRadius/75/-0.25
-delay/146
-lifeSpan/42
-safe
-showSafe
+redirect
+lifeSpan/10
+radiusChange/-1
+redirect
+lifeSpan/100
+radiusChange/10

@@ -10,6 +10,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 
 public class SafeZone {
 
@@ -33,9 +34,13 @@ public class SafeZone {
 				path = (Path) Path.intersect(this.safeCircle(), rect);
 			}
 			else if(showSafe()) {
+				Shape paths = Path.subtract(rect, this.safeCircle()); 
 				for(int i = 0; i < Map.safeDiskSize(); i++) {
-					path = (Path) Path.subtract(rect, Map.safeDisks()[i].safeZone().safeCircle());
+					if(Map.safeDisks()[i].safeZone() != this) {
+						paths = Path.intersect(paths, Map.safeDisks()[i].safeZone().safeCircle());
+					}
 				}
+				path = (Path) paths;
 			}
 			path.setFill(Color.rgb(93,35,71)); 
 			this.paths()[pathSize()] = path;
