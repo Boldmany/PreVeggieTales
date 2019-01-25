@@ -133,7 +133,7 @@ public class Level {
 						}
 					}
 					if(disk.showSafe()) {
-						Laser laser = new Laser(disk.spawn(), new Vector(0, 0), new Vector(0, -1000), 1000, 0, new Delay(disk.delay().dur() - 1), new Delay(1), 1);
+						Laser laser = new Laser(disk.spawn(), new Vector(0, 0), new Vector(0, -1), 1000, 0, new Delay(disk.delay().dur() - 1), new Delay(1), 1);
 						laser.setShowSafe(true);
 						this.lasers()[this.laserSize()] = laser;
 						this.setLaserSize(this.laserSize() + 1);
@@ -170,12 +170,12 @@ public class Level {
 									break;
 								}
 							}
-							this.redirect()[this.redirectSize()] = redirected;
-							this.setRedirectSize(this.redirectSize() + 1);
 							loop = redirected.redirect();
 							if(loop) {
-								redirected.setRedirectIndex(this.redirectSize());
+								redirected.setRedirectIndex(this.redirectSize() + 1);
 							}
+							this.redirect()[this.redirectSize()] = redirected;
+							this.setRedirectSize(this.redirectSize() + 1);
 						}
 					}
 				}

@@ -36,9 +36,9 @@ public class GameLoop implements EventHandler<ActionEvent> {
 
 			Main.gc().setFill(Color.BLACK);
 			for(int i = 0; i < Map.safeDiskSize(); i++) {
-				int startSize = Map.safeDiskSize();
+				Disk startDisk = Map.safeDisks()[i];
 				Map.safeDisks()[i].delayCheck();
-				if(Map.safeDiskSize() != startSize) {
+				if(Map.safeDisks()[i] != startDisk) {
 					i--;
 				}
 				else if(Map.safeDiskSize() != 0) {

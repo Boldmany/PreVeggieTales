@@ -13,7 +13,7 @@ public class Pineapple {
 	private Rotate rotate = new Rotate(0,0,0);
 	private Vector dir = new Vector(0,0);
 	private Delay dash = new Delay(4);
-	private Delay cooldown = new Delay(20);
+	private Delay cooldown = new Delay(16);
 	private double speed;
 	
 	public Pineapple(Vector coord) {

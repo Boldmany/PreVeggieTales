@@ -199,6 +199,9 @@ public class Disk {
 					this.circularPath(), new Delay(0),
 					Map.levels()[Map.playLevel()].redirect()[this.redirectIndex()].lifeSpan(),
 					this.safe(), Map.levels()[Map.playLevel()].redirect()[this.redirectIndex()].redirect());
+			if(disk.redirect()) {
+				disk.setRedirectIndex(Map.levels()[Map.playLevel()].redirect()[this.redirectIndex()].redirectIndex());
+			}
 			disk.setCurrentRadius(this.currentRadius());
 
 

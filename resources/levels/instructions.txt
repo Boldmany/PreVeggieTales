@@ -64,6 +64,9 @@ If disk
 
 	"safe"(this will automatically set it to true)
 
+	"showSafe" (lets say you want to show that the there will be a smaller safe circle in the 
+	larger one just use this and see what happens)
+
 	"redirect"(this will automatically set it to true, then use the commands under to redirect it)
 
 		"vec"
@@ -79,6 +82,9 @@ If disk
 
 		"lifeSpan"
 		int how long the disk should last
+
+		"radiusChange"
+		double how much the radius will change every frame
 
 		"redirect"(this will automatically set it to true, recursion)
 			
