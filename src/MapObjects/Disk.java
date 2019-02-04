@@ -80,10 +80,8 @@ public class Disk {
 	}
 
 	public void delayCheck() {
-
 		if(this.delay().delayCheck() && !this.delay().done()) {
 			this.delay().setDone(true);
-			this.setShowSafe(showSafe);
 			if(this.delay().dur() != 0 && !this.safe()) {
 				this.removeGhost();
 			}

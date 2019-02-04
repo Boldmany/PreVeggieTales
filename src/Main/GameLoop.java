@@ -17,6 +17,9 @@ public class GameLoop implements EventHandler<ActionEvent> {
 		if(!Map.levels()[Map.playLevel()].clip().isRunning()) {
 			Map.levels()[Map.playLevel()].clip().start();
 		}
+		if(Map.levels()[Map.playLevel()].frames() == 1000) {
+			System.out.println(Map.levels()[Map.playLevel()].clip().getFramePosition());
+		}
 		Map.levels()[Map.playLevel()].delayCheck();
 
 		Main.gc().clearRect(0, 0, Main.canvas().getWidth(), Main.canvas().getHeight());

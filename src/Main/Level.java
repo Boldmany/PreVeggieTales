@@ -20,7 +20,7 @@ import javafx.scene.shape.Circle;
 public class Level {
 
 	private Clip clip;
-	private int frames = 0;
+	private int frames = 000;
 	private Laser[] lasers = new Laser[3000];
 	private int laserSize = 0;
 	private int currentLaser = 0;
@@ -29,6 +29,9 @@ public class Level {
 	private int currentDisk = 0;
 	private Disk[] redirect = new Disk[3000];
 	private int redirectSize = 0;
+	private Checkpoint[] checkpoints = new Checkpoint[5];
+	private int currentCheckpoint = 0;
+	private int checkpointSize = 0;;
 
 	public Level(int level) {
 		File soundFile = new File("resources/levels/level" + level + "/levelSong.wav");
@@ -37,6 +40,7 @@ public class Level {
 			this.setClip(AudioSystem.getClip());
 			AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
 			this.clip().open(audioIn);
+			//this.clip().setFramePosition(797760);
 		}
 		catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
 			e.printStackTrace();
@@ -44,7 +48,6 @@ public class Level {
 	}
 
 	public void levelReader(String filePath) {
-
 		try {
 			FileReader fileReader = new FileReader(filePath);
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -179,6 +182,11 @@ public class Level {
 						}
 					}
 				}
+				else if(object[0].equals("checkpoint")) {
+					Checkpoint checkpoint = new Checkpoint(Integer.parseInt(object[1]));
+					this.checkpoints()[this.checkpointSize()] = checkpoint;
+					this.setcheckpointSize(this.checkpointSize() + 1);
+				}
 			}
 			bufferedReader.close();
 			//sort
@@ -206,8 +214,19 @@ public class Level {
 						return 0;
 					}
 				}
-
 			});
+			if(this.frames() != 0 && this.laserSize() != 0 && this.diskSize() != 0) {
+				for(int i = 0; i <= this.frames(); i++) {
+					if(i == this.lasers()[this.currentLaser()].spawn()) {
+						this.setCurrentLaser(this.currentLaser() + 1);
+						i--;
+					}
+					if(i == this.disks()[this.currentDisk()].spawn()) {
+						this.setCurrentDisk(this.currentDisk() + 1);
+						i--;
+					}
+				}
+			}
 		} 
 		catch (IOException e) {
 			e.printStackTrace();
@@ -237,17 +256,27 @@ public class Level {
 				}
 			}
 		}
+		if(this.checkpointSize() != 0) {
+			if(this.checkpoints()[this.currentCheckpoint()].frame() - 100 == this.frames()) {
+				this.checkpoints()[this.currentCheckpoint()].setMusicFrame(this.clip().getFramePosition());
+			}
+			if(this.checkpoints()[this.currentCheckpoint()].frame() == this.frames()) {
+				this.checkpoints()[this.currentCheckpoint()].setCurrentLaser(this.currentLaser());
+				this.checkpoints()[this.currentCheckpoint()].setCurrentDisk(this.currentDisk());
+				this.setCurrentCheckpoint(this.currentCheckpoint() + 1);
+			}
+		}
 		this.setFrames(this.frames() + 1);
 	}
 
 	public void createLaser(Laser laser) {
 		laser.setLaserIndex(Map.laserSize());
-		Map.lasers()[laser.laserIndex()] = laser;
+		Map.lasers()[Map.laserSize()] = laser;
 		Map.setLaserSize(Map.laserSize() + 1);
 		if(laser.delay().dur() != 0) {
 			laser.setGhostIndex(Map.ghostLaserSize());
 			Laser warning = new Laser(new Vector(laser.coord().x(), laser.coord().y()), laser.width(), laser.height(), laser.dir());
-			Map.ghostLasers()[laser.ghostIndex()] = warning;
+			Map.ghostLasers()[Map.ghostLaserSize()] = warning;
 			Map.setGhostLaserSize(Map.ghostLaserSize() + 1);
 		}
 	}
@@ -357,5 +386,29 @@ public class Level {
 
 	public void setRedirectSize(int redirectSize) {
 		this.redirectSize = redirectSize;
+	}
+
+	public Checkpoint[] checkpoints() {
+		return checkpoints;
+	}
+
+	public void setCheckpoints(Checkpoint[] checkpoints) {
+		this.checkpoints = checkpoints;
+	}
+
+	public int currentCheckpoint() {
+		return currentCheckpoint;
+	}
+
+	public void setCurrentCheckpoint(int currentCheckpoint) {
+		this.currentCheckpoint = currentCheckpoint;
+	}
+	
+	public int checkpointSize() {
+		return checkpointSize;
+	}
+
+	public void setcheckpointSize(int checkpointSize) {
+		this.checkpointSize = checkpointSize;
 	}
 }

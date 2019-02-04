@@ -23,5 +23,8 @@ public class OnKeyPressed implements EventHandler<KeyEvent>{
 		if(key.getCode() == KeyCode.SPACE && Map.players()[0].cooldown().done()) {
 			Map.players()[0].dash().setDone(false);
 		}
+		if(key.getCode() == KeyCode.H) {
+			Map.players()[0].death();
+		}
 	}
 }

@@ -1,5 +1,7 @@
 package Character;
 
+import java.util.Arrays;
+
 import Main.*;
 import javafx.scene.image.Image;
 import javafx.scene.transform.Rotate;
@@ -20,8 +22,8 @@ public class Pineapple {
 		this.setCoord(coord);
 		this.coord().setX(this.coord().x());
 		this.coord().setY(this.coord().y());
-		rotate.setPivotX(this.coord().x());
-		rotate.setPivotY(this.coord().y());
+		this.rotate().setPivotX(this.coord().x());
+		this.rotate().setPivotY(this.coord().y());
 		Map.players()[Map.playerSize()] = this;
 		Map.setPlayerSize(Map.playerSize() + 1);
 	}
@@ -70,9 +72,9 @@ public class Pineapple {
 		
 		this.coord().setY(this.coord().y() + (this.speed() * this.dir().y()));
 		this.coord().setX(this.coord().x() + (this.speed() * this.dir().x()));
-		rotate.setPivotX(this.coord().x());
-		rotate.setPivotY(this.coord().y());
-		rotate.setAngle(degree);
+		this.rotate().setPivotX(this.coord().x());
+		this.rotate().setPivotY(this.coord().y());
+		this.rotate().setAngle(degree);
 	}
 
 	public void delayCheck() {
@@ -98,6 +100,31 @@ public class Pineapple {
 			else {
 				this.dash().increase();
 			}
+		}
+	}
+	
+	public void death() {
+		Arrays.fill(Map.disks(), null);
+		Arrays.fill(Map.lasers(), null);
+		Arrays.fill(Map.ghostDisks(), null);
+		Arrays.fill(Map.ghostLasers(), null);
+		Arrays.fill(Map.safeDisks(), null);
+		Map.setDiskSize(0);
+		Map.setLaserSize(0);
+		Map.setGhostDiskSize(0);
+		Map.setGhostLaserSize(0);
+		Map.setSafeDiskSize(0);
+		if(Map.levels()[Map.playLevel()].currentCheckpoint() != 0) {
+			Map.levels()[Map.playLevel()].setFrames(Map.levels()[Map.playLevel()].checkpoints()[Map.levels()[Map.playLevel()].currentCheckpoint() - 1].frame() - 100);
+			Map.levels()[Map.playLevel()].setCurrentDisk(Map.levels()[Map.playLevel()].checkpoints()[Map.levels()[Map.playLevel()].currentCheckpoint() - 1].currentDisk());
+			Map.levels()[Map.playLevel()].setCurrentLaser(Map.levels()[Map.playLevel()].checkpoints()[Map.levels()[Map.playLevel()].currentCheckpoint() - 1].currentLaser());
+			Map.levels()[Map.playLevel()].clip().setFramePosition(Map.levels()[Map.playLevel()].checkpoints()[Map.levels()[Map.playLevel()].currentCheckpoint() - 1].musicFrame());
+		}
+		else {
+			Map.levels()[Map.playLevel()].setFrames(0);
+			Map.levels()[Map.playLevel()].setCurrentDisk(0);
+			Map.levels()[Map.playLevel()].setCurrentLaser(0);
+			Map.levels()[Map.playLevel()].clip().setFramePosition(0);
 		}
 	}
 	
