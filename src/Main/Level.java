@@ -256,7 +256,7 @@ public class Level {
 				}
 			}
 		}
-		if(this.checkpointSize() != 0) {
+		if(this.checkpointSize() != 0 && this.currentCheckpoint() != this.checkpointSize()) {
 			if(this.checkpoints()[this.currentCheckpoint()].frame() - 100 == this.frames()) {
 				this.checkpoints()[this.currentCheckpoint()].setMusicFrame(this.clip().getFramePosition());
 			}

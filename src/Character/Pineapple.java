@@ -114,6 +114,10 @@ public class Pineapple {
 		Map.setGhostDiskSize(0);
 		Map.setGhostLaserSize(0);
 		Map.setSafeDiskSize(0);
+
+		Map.levels()[Map.playLevel()].setDiskSize(0);
+		Map.levels()[Map.playLevel()].setLaserSize(0);
+		
 		if(Map.levels()[Map.playLevel()].currentCheckpoint() != 0) {
 			Map.levels()[Map.playLevel()].setFrames(Map.levels()[Map.playLevel()].checkpoints()[Map.levels()[Map.playLevel()].currentCheckpoint() - 1].frame() - 100);
 			Map.levels()[Map.playLevel()].setCurrentDisk(Map.levels()[Map.playLevel()].checkpoints()[Map.levels()[Map.playLevel()].currentCheckpoint() - 1].currentDisk());
@@ -125,7 +129,9 @@ public class Pineapple {
 			Map.levels()[Map.playLevel()].setCurrentDisk(0);
 			Map.levels()[Map.playLevel()].setCurrentLaser(0);
 			Map.levels()[Map.playLevel()].clip().setFramePosition(0);
+			
 		}
+		Map.levels()[Map.playLevel()].levelReader("resources/levels/level" + (Map.playLevel() + 1) + "/levelEditor.txt");
 	}
 	
 	public double radius() {
