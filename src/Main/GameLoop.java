@@ -57,11 +57,12 @@ public class GameLoop implements EventHandler<ActionEvent> {
 		Main.gc().setFill(warning);
 		if(Map.safeDiskSize() == 0) {
 			for(int i = 0; i < Map.ghostLaserSize(); i++) {
-				Main.gc().fillRect(Map.ghostLasers()[i].coord().x(), Map.ghostLasers()[i].coord().y(),
+				Main.gc().fillRect(Map.ghostLasers()[i].coord().x() + Map.levels()[Map.playLevel()].shake().degree().x(), Map.ghostLasers()[i].coord().y() + Map.levels()[Map.playLevel()].shake().degree().y(),
 						Map.ghostLasers()[i].width(), Map.ghostLasers()[i].height());
 			}
 			for(int i = 0; i < Map.ghostDiskSize(); i++) {
-				Main.gc().fillOval(Map.ghostDisks()[i].coord().x() - Map.ghostDisks()[i].currentRadius(), Map.ghostDisks()[i].coord().y() - Map.ghostDisks()[i].currentRadius(),
+				Main.gc().fillOval(Map.ghostDisks()[i].coord().x() - Map.ghostDisks()[i].currentRadius() + Map.levels()[Map.playLevel()].shake().degree().x(),
+						Map.ghostDisks()[i].coord().y() - Map.ghostDisks()[i].currentRadius() + Map.levels()[Map.playLevel()].shake().degree().y(),
 						Map.ghostDisks()[i].currentRadius() * 2, Map.ghostDisks()[i].currentRadius() * 2);
 			}
 		}
@@ -74,7 +75,7 @@ public class GameLoop implements EventHandler<ActionEvent> {
 
 			if(laser == Map.lasers()[i]) {
 				if(Map.lasers()[i].delay().done()) {
-					Main.gc().fillRect(Map.lasers()[i].coord().x(), Map.lasers()[i].coord().y(),
+					Main.gc().fillRect(Map.lasers()[i].coord().x() + Map.levels()[Map.playLevel()].shake().degree().x(), Map.lasers()[i].coord().y() + Map.levels()[Map.playLevel()].shake().degree().y(), 
 							Map.lasers()[i].width(), Map.lasers()[i].height());
 				}
 			}
@@ -88,7 +89,8 @@ public class GameLoop implements EventHandler<ActionEvent> {
 
 			if(disk == Map.disks()[i]) {
 				if(Map.disks()[i].delay().done()) {
-					Main.gc().fillOval(Map.disks()[i].coord().x() - Map.disks()[i].currentRadius(), Map.disks()[i].coord().y() - Map.disks()[i].currentRadius(),
+					Main.gc().fillOval(Map.disks()[i].coord().x() - Map.disks()[i].currentRadius() + Map.levels()[Map.playLevel()].shake().degree().x(), 
+							Map.disks()[i].coord().y() - Map.disks()[i].currentRadius() + Map.levels()[Map.playLevel()].shake().degree().y(),
 							Map.disks()[i].currentRadius() * 2, Map.disks()[i].currentRadius() * 2);
 				}
 			}
@@ -102,7 +104,8 @@ public class GameLoop implements EventHandler<ActionEvent> {
 			Main.gc().save();
 			Main.gc().transform(Map.players()[i].rotate().getMxx(), Map.players()[i].rotate().getMyx(), Map.players()[i].rotate().getMxy(), 
 					Map.players()[i].rotate().getMyy(), Map.players()[i].rotate().getTx(), Map.players()[i].rotate().getTy());
-			Main.gc().drawImage(Map.players()[i].img(), Map.players()[i].coord().x() - 13, Map.players()[i].coord().y() - 25);
+			Main.gc().drawImage(Map.players()[i].img(), Map.players()[i].coord().x() - 13 + Map.levels()[Map.playLevel()].shake().degree().x(), 
+					Map.players()[i].coord().y() - 25 + Map.levels()[Map.playLevel()].shake().degree().y());
 			Main.gc().restore();
 		}
 		SafeZone.update();

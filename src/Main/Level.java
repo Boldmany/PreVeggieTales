@@ -32,6 +32,10 @@ public class Level {
 	private Checkpoint[] checkpoints = new Checkpoint[5];
 	private int currentCheckpoint = 0;
 	private int checkpointSize = 0;;
+	private Shake[] shakes = new Shake[3000];
+	private Shake shake = new Shake(0, new Delay(0), new Vector(0, 0));
+	private int currentShake = 0;
+	private int shakeSize = 0;
 
 	public Level(int level) {
 		File soundFile = new File("resources/levels/level" + level + "/levelSong.wav");
@@ -125,7 +129,10 @@ public class Level {
 							disk.setSafe(true);
 						}
 						else if(change[0].equals("showSafe")) {
-							disk.setShowSafe(true);
+							Laser laser = new Laser(disk.spawn(), new Vector(0, 0), new Vector(0, -1), 1000, 0, new Delay(disk.delay().dur() - 1), new Delay(1), 1);
+							laser.setShowSafe(true);
+							this.lasers()[this.laserSize()] = laser;
+							this.setLaserSize(this.laserSize() + 1);
 						}
 						else if(change[0].equals("redirect")) {
 							disk.setRedirect(true);
@@ -134,12 +141,6 @@ public class Level {
 						else {
 							break;
 						}
-					}
-					if(disk.showSafe()) {
-						Laser laser = new Laser(disk.spawn(), new Vector(0, 0), new Vector(0, -1), 1000, 0, new Delay(disk.delay().dur() - 1), new Delay(1), 1);
-						laser.setShowSafe(true);
-						this.lasers()[this.laserSize()] = laser;
-						this.setLaserSize(this.laserSize() + 1);
 					}
 					this.disks()[this.diskSize()] = disk;
 					this.setDiskSize(this.diskSize() + 1);
@@ -186,6 +187,11 @@ public class Level {
 					Checkpoint checkpoint = new Checkpoint(Integer.parseInt(object[1]));
 					this.checkpoints()[this.checkpointSize()] = checkpoint;
 					this.setcheckpointSize(this.checkpointSize() + 1);
+				}
+				else if(object[0].equals("shake")) {
+					Shake shake = new Shake(Integer.parseInt(object[1]), new Delay(Integer.parseInt(object[2])), new Vector(Double.parseDouble(object[3]), Double.parseDouble(object[3])));
+					this.shakes()[this.shakeSize()] = shake;
+					this.setShakeSize(this.shakeSize() + 1);
 				}
 			}
 			bufferedReader.close();
@@ -266,6 +272,30 @@ public class Level {
 				this.setCurrentCheckpoint(this.currentCheckpoint() + 1);
 			}
 		}
+		if(this.shakes()[this.currentShake()].spawn() == this.frames()) {
+			this.setShake(this.shakes[this.currentShake()]);
+			if(this.currentShake() + 1 != this.shakeSize()) {
+				this.setCurrentShake(this.currentShake() + 1);
+			}
+		}
+		if(!this.shake().dur().done()) {
+			this.shake().dur().increase();
+			if(this.shake().degree().x() > 0 && this.shake().degree().y() > 0) {
+				this.shake().degree().setX(-this.shake().degree().x());
+			}
+			else if(this.shake().degree().x() < 0 && this.shake().degree().y() > 0) {
+				this.shake().degree().setY(-this.shake().degree().y());
+			}
+			else if(this.shake().degree().x() < 0 && this.shake().degree().y() < 0) {
+				this.shake().degree().setX(-this.shake().degree().x());
+			}
+			else {
+				this.shake().degree().setY(-this.shake().degree().y());
+			}
+		}
+		else {
+			this.shake().setDegree(new Vector(0, 0));
+		}
 		this.setFrames(this.frames() + 1);
 	}
 
@@ -275,7 +305,7 @@ public class Level {
 		Map.setLaserSize(Map.laserSize() + 1);
 		if(laser.delay().dur() != 0) {
 			laser.setGhostIndex(Map.ghostLaserSize());
-			Laser warning = new Laser(new Vector(laser.coord().x(), laser.coord().y()), laser.width(), laser.height(), laser.dir());
+			Laser warning = new Laser(new Vector(laser.coord().x(), laser.coord().y()), laser.width(), laser.height(), laser.dir(), laser.showSafe());
 			Map.ghostLasers()[Map.ghostLaserSize()] = warning;
 			Map.setGhostLaserSize(Map.ghostLaserSize() + 1);
 		}
@@ -410,5 +440,37 @@ public class Level {
 
 	public void setcheckpointSize(int checkpointSize) {
 		this.checkpointSize = checkpointSize;
+	}
+
+	public Shake[] shakes() {
+		return shakes;
+	}
+
+	public void setShakes(Shake[] shakes) {
+		this.shakes = shakes;
+	}
+
+	public int shakeSize() {
+		return shakeSize;
+	}
+	
+	public void setShakeSize(int shakeSize) {
+		this.shakeSize = shakeSize;
+	}
+	
+	public int currentShake() {
+		return currentShake;
+	}
+
+	public void setCurrentShake(int currentShake) {
+		this.currentShake = currentShake;
+	}
+
+	public Shake shake() {
+		return shake;
+	}
+
+	public void setShake(Shake shake) {
+		this.shake = shake;
 	}
 }

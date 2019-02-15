@@ -28,7 +28,6 @@ public class Disk {
 	private Delay death = new Delay(0);
 	private boolean circularMotion;
 	private boolean safe;
-	private boolean showSafe = false;
 	private boolean redirect;
 	private SafeZone safeZone;
 	private int diskIndex;
@@ -420,13 +419,5 @@ public class Disk {
 
 	public void setRedirectIndex(int redirectIndex) {
 		this.redirectIndex = redirectIndex;
-	}
-
-	public boolean showSafe() {
-		return showSafe;
-	}
-
-	public void setShowSafe(boolean showSafe) {
-		this.showSafe = showSafe;
 	}
 }

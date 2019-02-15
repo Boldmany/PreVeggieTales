@@ -19,21 +19,19 @@ public class SafeZone {
 	private Path[] paths = new Path[3000];
 	private int pathSize = 0;
 	private Circle safeCircle;
-	private boolean showSafe;
 
 	public SafeZone(Disk disk) {
 		this.setSafeCircle(new Circle(disk.coord().x(), disk.coord().y(), disk.currentRadius()));
-		this.setShowSafe(disk.showSafe());
 	}
 
 	public void rectangle(Laser warning, boolean addToIndication) {
 		Path path = new Path();
 		Rectangle rect = new Rectangle(warning.coord().x(), warning.coord().y(), warning.width(), warning.height());
 		if(addToIndication) {
-			if(warning.showSafe()) {
+			if(!warning.showSafe()) {
 				path = (Path) Path.intersect(this.safeCircle(), rect);
 			}
-			else if(showSafe()) {
+			else {
 				Shape paths = Path.subtract(rect, this.safeCircle()); 
 				for(int i = 0; i < Map.safeDiskSize(); i++) {
 					if(Map.safeDisks()[i].safeZone() != this) {
@@ -59,7 +57,7 @@ public class SafeZone {
 		Circle circle = new Circle(warning.coord().x(), warning.coord().y(), warning.currentRadius());
 		path = (Path) Path.intersect(this.safeCircle(), circle);
 		if(addToIndication) {
-			path.setFill(Color.rgb(93,35,71)); 
+			path.setFill(Color.rgb(93,35,71));
 			this.paths()[pathSize()] = path;
 			warning.setPathIndex(pathSize());
 			this.setPathSize(pathSize() + 1);
@@ -146,13 +144,5 @@ public class SafeZone {
 
 	public static void setIndication(Group indication) {
 		SafeZone.indication = indication;
-	}
-
-	public boolean showSafe() {
-		return showSafe;
-	}
-
-	public void setShowSafe(boolean showSafe) {
-		this.showSafe = showSafe;
 	}
 }

@@ -29,12 +29,12 @@ public class Laser {
 		this.setDir(dir);
 	}
 	
-	public Laser(Vector coord, double width, double height, int dir) {
+	public Laser(Vector coord, double width, double height, int dir, boolean showSafe) {
 		this.setCoord(coord);
 		this.setWidth(width);
 		this.setHeight(height);
 		this.setDir(dir);
-		
+		this.setShowSafe(showSafe);
 		if(dir == 1) {
 			this.setHeight(Main.canvas().getHeight());
 		}

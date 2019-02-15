@@ -4,9 +4,9 @@ public class Shake {
 	
 	private int spawn;
 	private Delay dur;
-	private double degree;
+	private Vector degree;
 	
-	public Shake (int spawn, Delay dur, double degree) {
+	public Shake (int spawn, Delay dur, Vector degree) {
 		this.setSpawn(spawn);
 		this.setDur(dur);
 		this.setDegree(degree);
@@ -25,10 +25,14 @@ public class Shake {
 	public void setDur(Delay dur) {
 		this.dur = dur;
 	}
-	public double degree() {
+
+
+	public Vector degree() {
 		return degree;
 	}
-	public void setDegree(double degree) {
+
+
+	public void setDegree(Vector degree) {
 		this.degree = degree;
 	}
 }
