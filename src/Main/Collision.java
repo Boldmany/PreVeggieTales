@@ -1,6 +1,10 @@
 package Main;
 
-import MapObjects.*;
+import Character.Pineapple;
+import MapObjects.Disk;
+import MapObjects.Laser;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 
 public class Collision {
 	
@@ -41,5 +45,29 @@ public class Collision {
 				}
 			}
 		}
+	}
+	
+	public static boolean characterToLaser(Circle character, Laser laser) {
+		return (character.intersects(laser.coord().x(), laser.coord().y(), laser.width(), laser.height()) && laser.delay().done());
+	}
+	
+	public static boolean characterToDisk(Pineapple character, Disk disk) {
+		Line line = new Line();
+		line.setStartX(Math.min(character.coord().x(), disk.coord().x()));
+		line.setStartY(Math.min(character.coord().y(), disk.coord().y()));
+		line.setEndX(Math.max(character.coord().x(), disk.coord().x()));
+		line.setEndY(Math.max(character.coord().y(), disk.coord().y()));
+		double length = Math.sqrt(Math.pow((line.getEndX() - line.getStartX()), 2) + Math.pow((line.getEndY() - line.getStartY()), 2));
+		return (length <= character.radius() - 7 + disk.currentRadius() && disk.delay().done());
+	}
+	
+	public static boolean characterToSafeDisk(Pineapple character, Disk disk) {
+		Line line = new Line();
+		line.setStartX(Math.min(character.coord().x(), disk.coord().x()));
+		line.setStartY(Math.min(character.coord().y(), disk.coord().y()));
+		line.setEndX(Math.max(character.coord().x(), disk.coord().x()));
+		line.setEndY(Math.max(character.coord().y(), disk.coord().y()));
+		double length = Math.sqrt(Math.pow((line.getEndX() - line.getStartX()), 2) + Math.pow((line.getEndY() - line.getStartY()), 2));
+		return (length >= character.radius() - 7 + disk.currentRadius() && disk.delay().done());
 	}
 }

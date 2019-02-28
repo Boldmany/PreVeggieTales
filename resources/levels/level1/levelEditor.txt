@@ -707,7 +707,7 @@ dir/1
 --------------------------------------
 disk/1486
 finalRadius/30/0
-circularMotion/90/5/500/325/230
+circularMotion/90/5/500/325/230/0
 lifeSpan/66
 redirect
 degreeChange/-3
@@ -718,7 +718,7 @@ lifeSpan/1000
 
 disk/1486
 finalRadius/30/0
-circularMotion/270/5/500/325/230
+circularMotion/270/5/500/325/230/0
 lifeSpan/66
 redirect
 degreeChange/-3
@@ -729,7 +729,7 @@ lifeSpan/1000
 
 disk/1486
 finalRadius/30/0
-circularMotion/180/5/500/325/230
+circularMotion/180/5/500/325/230/0
 lifeSpan/66
 redirect
 degreeChange/-3
@@ -740,7 +740,7 @@ lifeSpan/1000
 
 disk/1486
 finalRadius/30/0
-circularMotion/360/5/500/325/230
+circularMotion/360/5/500/325/230/0
 lifeSpan/66
 redirect
 degreeChange/-3
@@ -751,7 +751,7 @@ lifeSpan/1000
 
 disk/1486
 finalRadius/30/0
-circularMotion/45/5/500/325/230
+circularMotion/45/5/500/325/230/0
 lifeSpan/66
 redirect
 degreeChange/-3
@@ -762,7 +762,7 @@ lifeSpan/1000
 
 disk/1486
 finalRadius/30/0
-circularMotion/135/5/500/325/230
+circularMotion/135/5/500/325/230/0
 lifeSpan/66
 redirect
 degreeChange/-3
@@ -773,7 +773,7 @@ lifeSpan/1000
 
 disk/1486
 finalRadius/30/0
-circularMotion/225/5/500/325/230
+circularMotion/225/5/500/325/230/0
 lifeSpan/66
 redirect
 degreeChange/-3
@@ -784,13 +784,13 @@ lifeSpan/1000
 
 disk/1486
 finalRadius/30/0
-circularMotion/315/5/500/325/230
+circularMotion/315/5/500/325/230/1
 lifeSpan/66
 redirect
 degreeChange/-3
+towardsCenter/-1
 lifeSpan/24
 redirect
 degreeChange/5
+towardsCenter/1
 lifeSpan/1000
-------------------------------------------
-shake/0/10000/3

@@ -32,7 +32,7 @@ public class Main extends Application{
 			scene.setOnKeyReleased(new OnKeyReleased());
 			
 			window.setScene(scene);
-			window.setTitle("preVeggieTales");
+			window.setTitle("PreVeggieTales");
 			window.show();
 			
 			Timeline gameLoop = new Timeline();

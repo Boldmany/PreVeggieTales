@@ -2,8 +2,12 @@ package Character;
 
 import java.util.Arrays;
 
-import Main.*;
+import Main.Collision;
+import Main.Delay;
+import Main.Map;
+import Main.Vector;
 import javafx.scene.image.Image;
+import javafx.scene.shape.Circle;
 import javafx.scene.transform.Rotate;
 
 public class Pineapple {
@@ -15,7 +19,10 @@ public class Pineapple {
 	private Rotate rotate = new Rotate(0,0,0);
 	private Vector dir = new Vector(0,0);
 	private Delay dash = new Delay(4);
-	private Delay cooldown = new Delay(16);
+	private Delay invincibility = new Delay(30);
+	private Delay cooldown = new Delay(13);
+	private Delay damaged = new Delay(60);
+	private int lives = 7;
 	private double speed;
 	
 	public Pineapple(Vector coord) {
@@ -26,6 +33,8 @@ public class Pineapple {
 		this.rotate().setPivotY(this.coord().y());
 		Map.players()[Map.playerSize()] = this;
 		Map.setPlayerSize(Map.playerSize() + 1);
+		this.damaged().setDone(true);
+		this.invincibility().setDone(true);
 	}
 	
 	public void move() {
@@ -75,31 +84,69 @@ public class Pineapple {
 		this.rotate().setPivotX(this.coord().x());
 		this.rotate().setPivotY(this.coord().y());
 		this.rotate().setAngle(degree);
+		
+		if(this.dash().done() && this.invincibility().done() && this.damaged().done()) {
+			this.collision();
+		}
 	}
 
 	public void delayCheck() {
 		if(this.dash().done()) {
-			this.setSpeed(4);
-			this.dash().setFramesPassed(0);
-			
+			if(!this.invincibility().done()) {
+				if(this.invincibility().delayCheck()) {
+					this.invincibility().setDone(true);
+					this.invincibility().setFramesPassed(0);
+				}
+			}
 			if(!this.cooldown().done()) {
-				if(this.cooldown().framesPassed() >= this.cooldown().dur()) {
+				if(this.cooldown().delayCheck()) {
 					this.cooldown().setDone(true);
 					this.cooldown().setFramesPassed(0);
-				}
-				else {
-					this.cooldown().increase();
 				}
 			}
 		}
 		else {
-			if(this.dash().framesPassed() >= this.dash().dur()) {
+			if(this.dash().delayCheck()) {
 				this.dash().setDone(true);
 				this.cooldown().setDone(false);
+				this.invincibility().setDone(false);
+				this.invincibility().setFramesPassed(0);
+				this.dash().setFramesPassed(0);
 			}
-			else {
-				this.dash().increase();
+		}
+		if(this.damaged().delayCheck()) {
+			this.damaged().setDone(true);
+			this.damaged().setFramesPassed(0);
+		}
+	}
+	
+	public void collision() {
+		boolean collision = false;
+		for(int i = 0; i < Map.laserSize(); i++) {
+			if(Collision.characterToLaser(new Circle(this.coord().x(), this.coord().y(), this.radius() - 7), Map.lasers()[i])) {
+				collision = true;
 			}
+		}
+		if(!collision) {
+			for(int i = 0; i < Map.diskSize(); i++) {
+				if(Collision.characterToDisk(this, Map.disks()[i])) {
+					collision = true;
+				}
+			}
+		}
+		if(!collision) {
+			for(int i = 0; i < Map.safeDiskSize(); i++) {
+				if(Collision.characterToSafeDisk(this, Map.safeDisks()[i])) {
+					collision = true;
+				}
+			}
+		}
+		
+		if(collision) {
+			this.setLives(this.lives() - 1);
+			System.out.println(this.lives());
+			this.damaged().setDone(false);
+			this.damaged().setFramesPassed(0);
 		}
 	}
 	
@@ -204,5 +251,29 @@ public class Pineapple {
 
 	public void setCooldown(Delay cooldown) {
 		this.cooldown = cooldown;
+	}
+
+	public Delay damaged() {
+		return damaged;
+	}
+
+	public void setDamaged(Delay damaged) {
+		this.damaged = damaged;
+	}
+
+	public int lives() {
+		return lives;
+	}
+
+	public void setLives(int lives) {
+		this.lives = lives;
+	}
+
+	public Delay invincibility() {
+		return invincibility;
+	}
+
+	public void setInvincibility(Delay invincibility) {
+		this.invincibility = invincibility;
 	}
 }

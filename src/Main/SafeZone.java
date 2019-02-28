@@ -13,7 +13,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
 public class SafeZone {
-
+	
 	private static Group indication = new Group();
 	private static Group onTop = new Group();
 	private Path[] paths = new Path[3000];
@@ -26,7 +26,8 @@ public class SafeZone {
 
 	public void rectangle(Laser warning, boolean addToIndication) {
 		Path path = new Path();
-		Rectangle rect = new Rectangle(warning.coord().x(), warning.coord().y(), warning.width(), warning.height());
+		Rectangle rect = new Rectangle(warning.coord().x() + Map.levels()[Map.playLevel()].shake().degree().x(), warning.coord().y() + Map.levels()[Map.playLevel()].shake().degree().y(),
+				warning.width(), warning.height());
 		if(addToIndication) {
 			if(!warning.showSafe()) {
 				path = (Path) Path.intersect(this.safeCircle(), rect);
@@ -54,7 +55,8 @@ public class SafeZone {
 
 	public void circle(Disk warning, boolean addToIndication) {
 		Path path = new Path();
-		Circle circle = new Circle(warning.coord().x(), warning.coord().y(), warning.currentRadius());
+		Circle circle = new Circle(warning.coord().x() + Map.levels()[Map.playLevel()].shake().degree().x(), 
+				warning.coord().y() + Map.levels()[Map.playLevel()].shake().degree().y(), warning.currentRadius());
 		path = (Path) Path.intersect(this.safeCircle(), circle);
 		if(addToIndication) {
 			path.setFill(Color.rgb(93,35,71));
@@ -77,7 +79,8 @@ public class SafeZone {
 		for(int i = 0; i < Map.safeDiskSize(); i++) {
 			Map.safeDisks()[i].safeZone().setPathSize(0);
 			Arrays.fill(Map.safeDisks()[i].safeZone().paths(), null);
-			Map.safeDisks()[i].safeZone().setSafeCircle(new Circle(Map.safeDisks()[i].coord().x(), Map.safeDisks()[i].coord().y(), Map.safeDisks()[i].currentRadius()));
+			Map.safeDisks()[i].safeZone().setSafeCircle(new Circle(Map.safeDisks()[i].coord().x() + Map.levels()[Map.playLevel()].shake().degree().x(), 
+					Map.safeDisks()[i].coord().y() + Map.levels()[Map.playLevel()].shake().degree().y(), Map.safeDisks()[i].currentRadius()));
 			for(int p = 0; p < Map.ghostLaserSize(); p++) {
 				Map.safeDisks()[i].safeZone().rectangle(Map.ghostLasers()[p], true);
 			}
@@ -99,8 +102,8 @@ public class SafeZone {
 		Main.group().getChildren().add(onTop());
 		for(int i = 0; i < Map.playerSize(); i++) {
 			ImageView pineapple = new ImageView(Map.players()[i].img());
-			pineapple.setX(Map.players()[i].coord().x() - 13);
-			pineapple.setY(Map.players()[i].coord().y() - 25);
+			pineapple.setX(Map.players()[i].coord().x() - 13 + Map.levels()[Map.playLevel()].shake().degree().x());
+			pineapple.setY(Map.players()[i].coord().y() - 25 + Map.levels()[Map.playLevel()].shake().degree().y());
 			pineapple.getTransforms().add(Map.players()[i].rotate());
 			onTop().getChildren().add(pineapple);
 		}

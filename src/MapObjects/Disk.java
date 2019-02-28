@@ -22,6 +22,7 @@ public class Disk {
 	private double radiusChange;
 	private double degree;
 	private double degreeChange;
+	private double towardsCenter;
 	private Circle circularPath;
 	private Delay delay;
 	private Delay lifeSpan;
@@ -37,7 +38,7 @@ public class Disk {
 	private int redirectIndex;
 
 	public Disk(int spawn, Vector coord, Vector vec, Vector maxSpeed, double finalRadius, double radiusChange,  
-			boolean circularMotion, double degree, double degreeChange, Circle circularPath, Delay delay, Delay lifeSpan, boolean safe, boolean redirect) {
+			boolean circularMotion, double degree, double degreeChange, double towardsCenter, Circle circularPath, Delay delay, Delay lifeSpan, boolean safe, boolean redirect) {
 		this.setSpawn(spawn);
 		this.setCoord(coord);
 		this.setVec(vec);
@@ -46,13 +47,14 @@ public class Disk {
 		this.setRadiusChange(radiusChange); 
 		this.setDegree(degree);
 		this.setDegreeChange(degreeChange);
+		this.setTowardsCenter(towardsCenter);
 		this.setCircularPath(circularPath);
 		this.setDelay(delay);
 		this.setLifeSpan(lifeSpan);
 		this.setCircularMotion(circularMotion);
 		this.setSafe(safe);
 		this.setRedirect(redirect);
-
+		
 		if(this.vec().x() < 0) {
 			this.dir().setX(-1);
 		}
@@ -104,6 +106,12 @@ public class Disk {
 
 			if(this.currentRadius() == this.finalRadius()) {
 				if(this.circularMotion()) {
+					if(this.towardsCenter() != 0) {
+						this.circularPath().setRadius(this.circularPath().getRadius() - this.towardsCenter());
+						if(this.circularPath().getRadius() < 0) {
+							this.circularPath().setRadius(0);
+						}
+					}
 					this.moveInCircle();
 				}
 				else {
@@ -193,6 +201,7 @@ public class Disk {
 					Map.levels()[Map.playLevel()].redirect()[this.redirectIndex()].maxSpeed(), this.finalRadius(), 
 					Map.levels()[Map.playLevel()].redirect()[this.redirectIndex()].radiusChange(),
 					this.circularMotion(), this.degree(), Map.levels()[Map.playLevel()].redirect()[this.redirectIndex()].degreeChange(),
+					Map.levels()[Map.playLevel()].redirect()[this.redirectIndex()].towardsCenter(),
 					this.circularPath(), new Delay(0),
 					Map.levels()[Map.playLevel()].redirect()[this.redirectIndex()].lifeSpan(),
 					this.safe(), Map.levels()[Map.playLevel()].redirect()[this.redirectIndex()].redirect());
@@ -419,5 +428,13 @@ public class Disk {
 
 	public void setRedirectIndex(int redirectIndex) {
 		this.redirectIndex = redirectIndex;
+	}
+
+	public double towardsCenter() {
+		return towardsCenter;
+	}
+
+	public void setTowardsCenter(double towardsCenter) {
+		this.towardsCenter = towardsCenter;
 	}
 }

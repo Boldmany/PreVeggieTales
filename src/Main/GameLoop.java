@@ -1,7 +1,8 @@
 package Main;
 
 import Character.Pineapple;
-import MapObjects.*;
+import MapObjects.Disk;
+import MapObjects.Laser;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.paint.Color;
@@ -45,9 +46,11 @@ public class GameLoop implements EventHandler<ActionEvent> {
 					i--;
 				}
 				else if(Map.safeDiskSize() != 0) {
-					Main.gc().fillOval(Map.safeDisks()[i].coord().x() - Map.safeDisks()[i].currentRadius(), Map.safeDisks()[i].coord().y() - Map.safeDisks()[i].currentRadius(),
+					Main.gc().fillOval(Map.safeDisks()[i].coord().x() - Map.safeDisks()[i].currentRadius() + Map.levels()[Map.playLevel()].shake().degree().x(), 
+							Map.safeDisks()[i].coord().y() - Map.safeDisks()[i].currentRadius() + Map.levels()[Map.playLevel()].shake().degree().y(),
 							Map.safeDisks()[i].currentRadius() * 2, Map.safeDisks()[i].currentRadius() * 2);
 				}
+				
 				if(Map.safeDiskSize() == 0) {
 					Main.gc().fillRect(0, 0, Main.canvas().getWidth(), Main.canvas().getHeight());
 				}
@@ -77,6 +80,7 @@ public class GameLoop implements EventHandler<ActionEvent> {
 				if(Map.lasers()[i].delay().done()) {
 					Main.gc().fillRect(Map.lasers()[i].coord().x() + Map.levels()[Map.playLevel()].shake().degree().x(), Map.lasers()[i].coord().y() + Map.levels()[Map.playLevel()].shake().degree().y(), 
 							Map.lasers()[i].width(), Map.lasers()[i].height());
+					
 				}
 			}
 			else {

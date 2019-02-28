@@ -20,7 +20,7 @@ import javafx.scene.shape.Circle;
 public class Level {
 
 	private Clip clip;
-	private int frames = 000;
+	private int frames = 1000;
 	private Laser[] lasers = new Laser[3000];
 	private int laserSize = 0;
 	private int currentLaser = 0;
@@ -44,7 +44,7 @@ public class Level {
 			this.setClip(AudioSystem.getClip());
 			AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
 			this.clip().open(audioIn);
-			//this.clip().setFramePosition(797760);
+			this.clip().setFramePosition(797760);
 		}
 		catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
 			e.printStackTrace();
@@ -94,7 +94,7 @@ public class Level {
 					this.setLaserSize(this.laserSize() + 1);
 				}
 				else if(object[0].equals("disk")){
-					Disk disk = new Disk(Integer.parseInt(object[1]), new Vector(0, 0), new Vector(0, 0), new Vector(0, 0), 0, 0, false, 0, 0,  new Circle(0, 0, 0), new Delay(0), new Delay(0), false, false);
+					Disk disk = new Disk(Integer.parseInt(object[1]), new Vector(0, 0), new Vector(0, 0), new Vector(0, 0), 0, 0, false, 0, 0, 0, new Circle(0, 0, 0), new Delay(0), new Delay(0), false, false);
 					while((line = bufferedReader.readLine()) != null) {
 						String[] change = line.split("/");
 						if(change[0].equals("coord")) {
@@ -115,7 +115,9 @@ public class Level {
 							disk.setDegree(Double.parseDouble(change[1]));
 							disk.setDegreeChange(Double.parseDouble(change[2]));
 							disk.setCircularPath(new Circle(Double.parseDouble(change[3]), Double.parseDouble(change[4]), Double.parseDouble(change[5])));
-
+							//add to instructions
+							disk.setTowardsCenter(Double.parseDouble(change[6]));
+							
 							disk.coord().setX(disk.circularPath().getCenterX() + (disk.circularPath().getRadius() * Math.cos(Math.toRadians(disk.degree()))));
 							disk.coord().setY(disk.circularPath().getCenterY() + (disk.circularPath().getRadius() * Math.sin(Math.toRadians(disk.degree()))));
 						}
@@ -165,6 +167,9 @@ public class Level {
 								}
 								else if(change[0].equals("radiusChange")) {
 									redirected.setRadiusChange(Double.parseDouble(change[1]));
+								}
+								else if(change[0].equals("towardsCenter")) {
+									redirected.setTowardsCenter(Double.parseDouble(change[1]));
 								}
 								else if(change[0].equals("redirect")) {
 									redirected.setRedirect(true);
@@ -272,14 +277,15 @@ public class Level {
 				this.setCurrentCheckpoint(this.currentCheckpoint() + 1);
 			}
 		}
-		if(this.shakes()[this.currentShake()].spawn() == this.frames()) {
-			this.setShake(this.shakes[this.currentShake()]);
-			if(this.currentShake() + 1 != this.shakeSize()) {
-				this.setCurrentShake(this.currentShake() + 1);
+		if(this.shakeSize() != 0) {
+			if(this.shakes()[this.currentShake()].spawn() == this.frames()) {
+				this.setShake(this.shakes()[this.currentShake()]);
+				if(this.currentShake() + 1 != this.shakeSize()) {
+					this.setCurrentShake(this.currentShake() + 1);
+				}
 			}
 		}
-		if(!this.shake().dur().done()) {
-			this.shake().dur().increase();
+		if(!this.shake().dur().delayCheck()) {
 			if(this.shake().degree().x() > 0 && this.shake().degree().y() > 0) {
 				this.shake().degree().setX(-this.shake().degree().x());
 			}
