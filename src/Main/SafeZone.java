@@ -100,12 +100,15 @@ public class SafeZone {
 		}
 		Main.group().getChildren().add(indication());
 		Main.group().getChildren().add(onTop());
+		
 		for(int i = 0; i < Map.playerSize(); i++) {
-			ImageView pineapple = new ImageView(Map.players()[i].img());
-			pineapple.setX(Map.players()[i].coord().x() - 13 + Map.levels()[Map.playLevel()].shake().degree().x());
-			pineapple.setY(Map.players()[i].coord().y() - 25 + Map.levels()[Map.playLevel()].shake().degree().y());
-			pineapple.getTransforms().add(Map.players()[i].rotate());
-			onTop().getChildren().add(pineapple);
+			if(Map.players()[i].alive()) {
+				ImageView player = new ImageView(Map.players()[i].img());
+				player.setX(Map.players()[i].coord().x() - 13 + Map.levels()[Map.playLevel()].shake().degree().x());
+				player.setY(Map.players()[i].coord().y() - 25 + Map.levels()[Map.playLevel()].shake().degree().y());
+				player.getTransforms().add(Map.players()[i].rotate());
+				onTop().getChildren().add(player);
+			}
 		}
 	}
 

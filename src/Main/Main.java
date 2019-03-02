@@ -16,6 +16,7 @@ public class Main extends Application{
 	private static Canvas canvas = new Canvas(1000, 650);
 	private static GraphicsContext gc = canvas.getGraphicsContext2D();
 	private static Group group = new Group();
+	private static boolean playing = false;
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -69,5 +70,13 @@ public class Main extends Application{
 
 	public static void setGroup(Group group) {
 		Main.group = group;
+	}
+
+	public static boolean playing() {
+		return playing;
+	}
+
+	public static void setPlaying(boolean playing) {
+		Main.playing = playing;
 	}
 }

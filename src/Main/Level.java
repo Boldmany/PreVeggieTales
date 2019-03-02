@@ -20,7 +20,7 @@ import javafx.scene.shape.Circle;
 public class Level {
 
 	private Clip clip;
-	private int frames = 1000;
+	private int frames = 0;
 	private Laser[] lasers = new Laser[3000];
 	private int laserSize = 0;
 	private int currentLaser = 0;
@@ -36,6 +36,7 @@ public class Level {
 	private Shake shake = new Shake(0, new Delay(0), new Vector(0, 0));
 	private int currentShake = 0;
 	private int shakeSize = 0;
+	private int length = 0;
 
 	public Level(int level) {
 		File soundFile = new File("resources/levels/level" + level + "/levelSong.wav");
@@ -44,7 +45,6 @@ public class Level {
 			this.setClip(AudioSystem.getClip());
 			AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
 			this.clip().open(audioIn);
-			this.clip().setFramePosition(797760);
 		}
 		catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
 			e.printStackTrace();
@@ -61,7 +61,10 @@ public class Level {
 					continue;
 				}
 				String[] object = line.split("/");
-				if(object[0].equals("laser")) {
+				if(object[0].equals("length")) {
+					this.setLength(Integer.parseInt(object[1]));
+				}
+				else if(object[0].equals("laser")) {
 					Laser laser = new Laser(Integer.parseInt(object[1]), new Vector(0 ,0), new Vector(0, 0), 0, 0, new Delay(0), new Delay(0), 1);
 					while((line = bufferedReader.readLine()) != null) {
 						String[] change = line.split("/");
@@ -115,7 +118,6 @@ public class Level {
 							disk.setDegree(Double.parseDouble(change[1]));
 							disk.setDegreeChange(Double.parseDouble(change[2]));
 							disk.setCircularPath(new Circle(Double.parseDouble(change[3]), Double.parseDouble(change[4]), Double.parseDouble(change[5])));
-							//add to instructions
 							disk.setTowardsCenter(Double.parseDouble(change[6]));
 							
 							disk.coord().setX(disk.circularPath().getCenterX() + (disk.circularPath().getRadius() * Math.cos(Math.toRadians(disk.degree()))));
@@ -200,7 +202,6 @@ public class Level {
 				}
 			}
 			bufferedReader.close();
-			//sort
 			Arrays.sort(lasers, new Comparator<Laser>() {
 
 				@Override
@@ -245,6 +246,11 @@ public class Level {
 	}
 
 	public void delayCheck() {
+		if(this.frames() == this.length() && Map.playLevel() != 4 && this.length() != 0) {
+			Map.levels()[Map.playLevel()].clip().close();
+			Map.setPlayLevel(Map.playLevel() + 1);
+			Map.levels()[Map.playLevel()].clip().start();
+		}
 		if(this.currentLaser() < this.laserSize()) {
 			for(int i = this.currentLaser(); i < this.laserSize(); i++) {
 				if(this.frames() == this.lasers()[i].spawn()) {
@@ -275,6 +281,12 @@ public class Level {
 				this.checkpoints()[this.currentCheckpoint()].setCurrentLaser(this.currentLaser());
 				this.checkpoints()[this.currentCheckpoint()].setCurrentDisk(this.currentDisk());
 				this.setCurrentCheckpoint(this.currentCheckpoint() + 1);
+				
+				for(int i = 0; i < Map.playerSize(); i++) {
+					if(!Map.players()[i].alive()) {
+						Map.players()[i].reborn();
+					}
+				}
 			}
 		}
 		if(this.shakeSize() != 0) {
@@ -478,5 +490,13 @@ public class Level {
 
 	public void setShake(Shake shake) {
 		this.shake = shake;
+	}
+
+	public int length() {
+		return length;
+	}
+
+	public void setLength(int length) {
+		this.length = length;
 	}
 }

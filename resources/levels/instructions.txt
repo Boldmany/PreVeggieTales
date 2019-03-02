@@ -1,12 +1,23 @@
-split information for one object by "/" and add a new line for a new object
-
 There will be a list of commands, you do not need to include all of them and you dont have to call them in order
 (if you dont include them it will be set to 0 or false)
 
+If there is a space between things in this document, it means you need to write it on a new line
+Otherwise right it on the same line split by a "/"
 
-First: type "laser" or "disk" for the respective object you want to create along with the frame to spawn it
+Commands: length, checkpoint, shake, laser, disk
+
+If "length"
+	int how long the level is in frames
+
+If "checkpoint"
+	int the frame the checkpoint is at
+
+If "shake"
+	int the frame it will start shaking
+	double the degree of the shake	
 
 If "laser"
+	int the frame it will spawn at
 
 	"coord"
 	double x coordiante
@@ -31,7 +42,8 @@ If "laser"
 	"dir"
 	int the direction(1:top to bottom, 2:right to left, 3:bottom to top, 4:left to right)
 
-If disk
+If "disk"
+	int the frame it will spawn at
 
 	"coord"
 	double x coordiante
@@ -54,18 +66,19 @@ If disk
 	double the amount of degrees you change every frame
 	double x coordinate of the circular path
 	double y coordinate of the circular path
-	double raius of the circular path
+	double radius of the circular path
+	double how much you decrease the radius by every frame 	
 
 	"delay"
 	int how long the warning should last
 
 	"lifeSpan"
-	int how long the disk should last	
+	int how long the disk should last
 
 	"safe"(this will automatically set it to true)
 
 	"showSafe" (lets say you want to show that the there will be a smaller safe circle in the 
-	larger one just use this and see what happens)
+	larger one, just use this and see what happens)
 
 	"redirect"(this will automatically set it to true, then use the commands under to redirect it)
 
@@ -85,6 +98,10 @@ If disk
 
 		"radiusChange"
 		double how much the radius will change every frame
+		
+		"towardsCenter"
+		double how much you decrease the radius of the circular path
+		by every frame
 
 		"redirect"(this will automatically set it to true, recursion)
 			

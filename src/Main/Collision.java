@@ -1,6 +1,6 @@
 package Main;
 
-import Character.Pineapple;
+import Character.Player;
 import MapObjects.Disk;
 import MapObjects.Laser;
 import javafx.scene.shape.Circle;
@@ -47,11 +47,26 @@ public class Collision {
 		}
 	}
 	
+	public static void characterToWall(Player character) {
+		if(character.coord().x() - character.radius() < 0) {
+			character.coord().setX(character.radius());
+		}
+		if(character.coord().x() + character.radius() > 1000) {
+			character.coord().setX(1000 - character.radius());
+		}
+		if(character.coord().y() - character.radius() < 0) {
+			character.coord().setY(character.radius());
+		}
+		if(character.coord().y() + character.radius() > 650) {
+			character.coord().setY(650 - character.radius());
+		}
+	} 
+	
 	public static boolean characterToLaser(Circle character, Laser laser) {
 		return (character.intersects(laser.coord().x(), laser.coord().y(), laser.width(), laser.height()) && laser.delay().done());
 	}
 	
-	public static boolean characterToDisk(Pineapple character, Disk disk) {
+	public static boolean characterToDisk(Player character, Disk disk) {
 		Line line = new Line();
 		line.setStartX(Math.min(character.coord().x(), disk.coord().x()));
 		line.setStartY(Math.min(character.coord().y(), disk.coord().y()));
@@ -61,7 +76,7 @@ public class Collision {
 		return (length <= character.radius() - 7 + disk.currentRadius() && disk.delay().done());
 	}
 	
-	public static boolean characterToSafeDisk(Pineapple character, Disk disk) {
+	public static boolean characterToSafeDisk(Player character, Disk disk) {
 		Line line = new Line();
 		line.setStartX(Math.min(character.coord().x(), disk.coord().x()));
 		line.setStartY(Math.min(character.coord().y(), disk.coord().y()));

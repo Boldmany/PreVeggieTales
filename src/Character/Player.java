@@ -10,36 +10,43 @@ import javafx.scene.image.Image;
 import javafx.scene.shape.Circle;
 import javafx.scene.transform.Rotate;
 
-public class Pineapple {
+public class Player {
 	
 	private Vector coord;
 	private int radius = 13;
 	private Vector vec = new Vector(0,0);
-	private Image img = new Image("file:resources/pineapple.png");
+	private Image img;
+	private Image normal;
+	private Image pain;
 	private Rotate rotate = new Rotate(0,0,0);
 	private Vector dir = new Vector(0,0);
 	private Delay dash = new Delay(4);
-	private Delay invincibility = new Delay(30);
-	private Delay cooldown = new Delay(13);
-	private Delay damaged = new Delay(60);
+	private Delay invincibility = new Delay(19);
+	private Delay cooldown = new Delay(20); 
+	private Delay notDamaged = new Delay(60);
 	private int lives = 7;
 	private double speed;
+	private boolean alive = true;
 	
-	public Pineapple(Vector coord) {
+	public Player(Vector coord, Image normal, Image pain) {
+		this.setImg(normal);
+		this.setNormal(normal);
+		this.setPain(pain);
 		this.setCoord(coord);
 		this.coord().setX(this.coord().x());
 		this.coord().setY(this.coord().y());
 		this.rotate().setPivotX(this.coord().x());
 		this.rotate().setPivotY(this.coord().y());
+		this.notDamaged().setDone(true);
+		this.invincibility().setDone(true);
+		this.cooldown().setDone(true);
+			
 		Map.players()[Map.playerSize()] = this;
 		Map.setPlayerSize(Map.playerSize() + 1);
-		this.damaged().setDone(true);
-		this.invincibility().setDone(true);
 	}
 	
 	public void move() {
 		
-		this.delayCheck();
 		boolean angled = false;
 		int degree = 0;
 		
@@ -85,12 +92,17 @@ public class Pineapple {
 		this.rotate().setPivotY(this.coord().y());
 		this.rotate().setAngle(degree);
 		
-		if(this.dash().done() && this.invincibility().done() && this.damaged().done()) {
+		Collision.characterToWall(this);
+	
+		if(this.dash().done() && this.invincibility().done() && this.notDamaged().done()) {
 			this.collision();
 		}
 	}
 
 	public void delayCheck() {
+		
+		this.move();
+		
 		if(this.dash().done()) {
 			if(!this.invincibility().done()) {
 				if(this.invincibility().delayCheck()) {
@@ -114,9 +126,10 @@ public class Pineapple {
 				this.dash().setFramesPassed(0);
 			}
 		}
-		if(this.damaged().delayCheck()) {
-			this.damaged().setDone(true);
-			this.damaged().setFramesPassed(0);
+		if(this.notDamaged().delayCheck()) {
+			this.notDamaged().setDone(true);
+			this.setImg(this.normal());
+			this.notDamaged().setFramesPassed(0);
 		}
 	}
 	
@@ -144,13 +157,52 @@ public class Pineapple {
 		
 		if(collision) {
 			this.setLives(this.lives() - 1);
-			System.out.println(this.lives());
-			this.damaged().setDone(false);
-			this.damaged().setFramesPassed(0);
+			
+			if(this.lives() == 0) {
+				this.setAlive(false);
+				boolean death = true;
+				
+				if(Map.playerSize() == 2) {
+					for(int i = 0; i < Map.playerSize(); i++) {
+						if(!Map.players()[i].alive()) {
+							death = !death;
+						}
+					}
+				}
+				
+				if(death) {
+					death();
+				}
+			}
+			else {
+				this.setImg(this.pain());
+				this.notDamaged().setDone(false);
+				this.notDamaged().setFramesPassed(0);
+			}
 		}
 	}
 	
-	public void death() {
+	public void reborn() {
+		this.setAlive(true);
+		this.setLives(7);
+	}
+	
+	public static void death() {
+		for(int i = 0; i < Map.playerSize(); i++) {
+			Map.players()[i].reborn();
+			Map.players()[i].setImg(Map.players()[i].normal());
+			Map.players()[i].notDamaged().setDone(true);
+			Map.players()[i].dash().setDone(true);
+			Map.players()[i].setDir(new Vector(0,0));
+			
+			if(i == 0) {
+				Map.players()[i].setCoord(new Vector(500,300));
+			}
+			else {
+				Map.players()[i].setCoord(new Vector(600,300));
+			}
+		}
+		
 		Arrays.fill(Map.disks(), null);
 		Arrays.fill(Map.lasers(), null);
 		Arrays.fill(Map.ghostDisks(), null);
@@ -253,14 +305,6 @@ public class Pineapple {
 		this.cooldown = cooldown;
 	}
 
-	public Delay damaged() {
-		return damaged;
-	}
-
-	public void setDamaged(Delay damaged) {
-		this.damaged = damaged;
-	}
-
 	public int lives() {
 		return lives;
 	}
@@ -275,5 +319,37 @@ public class Pineapple {
 
 	public void setInvincibility(Delay invincibility) {
 		this.invincibility = invincibility;
+	}
+
+	public Image pain() {
+		return pain;
+	}
+
+	public void setPain(Image pain) {
+		this.pain = pain;
+	}
+
+	public Image normal() {
+		return normal;
+	}
+
+	public void setNormal(Image normal) {
+		this.normal = normal;
+	}
+
+	public Delay notDamaged() {
+		return notDamaged;
+	}
+
+	public void setNotDamaged(Delay notDamaged) {
+		this.notDamaged = notDamaged;
+	}
+
+	public boolean alive() {
+		return alive;
+	}
+
+	public void setAlive(boolean alive) {
+		this.alive = alive;
 	}
 }

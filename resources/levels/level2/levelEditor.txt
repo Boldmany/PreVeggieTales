@@ -1,0 +1,7 @@
+laser/260
+coord/0/333
+vec/10000/0
+height/50
+delay/26
+lifeSpan/10000
+dir/4

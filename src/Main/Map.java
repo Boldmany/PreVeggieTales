@@ -1,12 +1,12 @@
 package Main;
 
-import Character.Pineapple;
+import Character.Player;
 import MapObjects.Disk;
 import MapObjects.Laser;
 
 public class Map {
 	
-	private static Pineapple[] players = new Pineapple[2];
+	private static Player[] players = new Player[2];
 	private static int playerSize = 0;
 	
 	private static Laser[] lasers = new Laser[3000];
@@ -22,7 +22,7 @@ public class Map {
 	private static Disk[] safeDisks = new Disk[3000];
 	private static int safeDiskSize = 0;
 	
-	private static Level[] levels = {new Level(1), new Level(2), new Level(3), new Level(4), new Level(5),};
+	private static Level[] levels = {new Level(1), new Level(2), new Level(3), new Level(4), new Level(5)};
 	private static int playLevel = 0;
 			
 	public static int ghostLaserSize() {
@@ -89,11 +89,11 @@ public class Map {
 		Map.ghostDiskSize = ghostDiskSize;
 	}
 
-	public static Pineapple[] players() {
+	public static Player[] players() {
 		return players;
 	}
 
-	public static void setPlayers(Pineapple[] players) {
+	public static void setPlayers(Player[] players) {
 		Map.players = players;
 	}
 

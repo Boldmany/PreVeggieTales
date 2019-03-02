@@ -1,6 +1,5 @@
 package MapObjects;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 import Main.Collision;
@@ -239,13 +238,6 @@ public class Disk {
 			Map.safeDisks()[i].safeZone().paths()[Map.safeDisks()[i].safeZone().pathSize()] = null;
 		}
 	}
-
-	public void removeSafe() {
-		Map.setSafeDiskSize(Map.safeDiskSize() - 1);
-		Map.safeDisks()[Arrays.asList(Map.safeDisks()).indexOf(this)] = Map.safeDisks()[Map.safeDiskSize()];
-		Map.safeDisks()[Map.safeDiskSize()] = null;
-	}
-
 
 	public Vector coord() {
 		return coord;
