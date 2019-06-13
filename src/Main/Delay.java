@@ -5,19 +5,24 @@ public class Delay {
 	private int framesPassed = 0;
 	private boolean done = false;
 	
+	/**
+	 * this is the constructor that will set the amount of frames for a delay
+	 * @param dur duration of the delay
+	 */
 	public Delay(double dur) {
 		this.setDur(dur);
 	}
 	
-	public void increase() {
-		this.setFramesPassed(this.framesPassed() + 1);
-	}
-	
+	/**
+	 * this will check for if the delay is over or not
+	 * @return if its done or not
+	 */
 	public boolean delayCheck() {
 		boolean done = false;
 		
-		if(this.framesPassed() < this.dur()) {
-			this.increase();
+		// self explanatory
+		if(this.framesPassed() < this.dur()) { 
+			this.setFramesPassed(this.framesPassed() + 1);
 		}
 		else if(this.framesPassed() == this.dur()) {
 			done = true;

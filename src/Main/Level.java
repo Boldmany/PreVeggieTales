@@ -20,16 +20,15 @@ import javafx.scene.shape.Circle;
 public class Level {
 
 	private Clip clip;
-	private int frames = 0;
+	private int frames = -100;
 	private Laser[] lasers = new Laser[3000];
 	private int laserSize = 0;
 	private int currentLaser = 0;
-	private Disk[] disks = new Disk[3000];
+	private Disk[] disks = new Disk[300000];
 	private int diskSize = 0;
 	private int currentDisk = 0;
-	private Disk[] redirect = new Disk[3000];
+	private Disk[] redirect = new Disk[300000];
 	private int redirectSize = 0;
-	private Checkpoint[] checkpoints = new Checkpoint[5];
 	private int currentCheckpoint = 0;
 	private int checkpointSize = 0;;
 	private Shake[] shakes = new Shake[3000];
@@ -38,7 +37,12 @@ public class Level {
 	private int shakeSize = 0;
 	private int length = 0;
 
+	/**
+	 * this is going to create a level by reading a file and inputing the song
+	 * @param level this is going to go and take the information from that folder
+	 */
 	public Level(int level) {
+		// getting music and file
 		File soundFile = new File("resources/levels/level" + level + "/levelSong.wav");
 		this.levelReader("resources/levels/level" + level + "/levelEditor.txt");
 		try {
@@ -51,20 +55,24 @@ public class Level {
 		}
 	}
 
+	/**
+	 * this will read the file and extract necessary data from it
+	 * @param filePath this is the file path
+	 */
 	public void levelReader(String filePath) {
-		try {
+		try { 
 			FileReader fileReader = new FileReader(filePath);
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
 			String line;
-			while((line = bufferedReader.readLine()) != null) {
-				if(line.equals("")) {
-					continue;
+			while((line = bufferedReader.readLine()) != null) { // while there is something to read
+				if(line.equals("")) { // if is not empty
+					continue; // re-run the loop starting from the next line
 				}
-				String[] object = line.split("/");
-				if(object[0].equals("length")) {
+				String[] object = line.split("/"); // get what type of object the program is creating
+				if(object[0].equals("length")) { // if the object is the length of the level
 					this.setLength(Integer.parseInt(object[1]));
 				}
-				else if(object[0].equals("laser")) {
+				else if(object[0].equals("laser")) { // if its a laser
 					Laser laser = new Laser(Integer.parseInt(object[1]), new Vector(0 ,0), new Vector(0, 0), 0, 0, new Delay(0), new Delay(0), 1);
 					while((line = bufferedReader.readLine()) != null) {
 						String[] change = line.split("/");
@@ -93,10 +101,10 @@ public class Level {
 							break;
 						}
 					}
-					this.lasers()[this.laserSize()] = laser;
+					this.lasers()[this.laserSize()] = laser; // put that created laser in an array for later use
 					this.setLaserSize(this.laserSize() + 1);
 				}
-				else if(object[0].equals("disk")){
+				else if(object[0].equals("disk")){ // if the object is a disk
 					Disk disk = new Disk(Integer.parseInt(object[1]), new Vector(0, 0), new Vector(0, 0), new Vector(0, 0), 0, 0, false, 0, 0, 0, new Circle(0, 0, 0), new Delay(0), new Delay(0), false, false);
 					while((line = bufferedReader.readLine()) != null) {
 						String[] change = line.split("/");
@@ -105,9 +113,20 @@ public class Level {
 						}
 						else if(change[0].equals("vec")) {
 							disk.setVec(new Vector(Double.parseDouble(change[1]), Double.parseDouble(change[2])));
-						}
-						else if(change[0].equals("maxSpeed")) {
-							disk.setMaxSpeed(new Vector(Double.parseDouble(change[1]), Double.parseDouble(change[2])));
+
+							// this will find the direction the disk is heading in
+							if(disk.vec().x() < 0) {
+								disk.dir().setX(-1);
+							}
+							else if(disk.vec().x() > 0) {
+								disk.dir().setX(1);
+							}
+							if (disk.vec().y() < 0) {
+								disk.dir().setY(-1);
+							}
+							else if(disk.vec().y() > 0) {
+								disk.dir().setY(1);
+							}
 						}
 						else if(change[0].equals("finalRadius")) {
 							disk.setFinalRadius(Double.parseDouble(change[1]));
@@ -119,7 +138,7 @@ public class Level {
 							disk.setDegreeChange(Double.parseDouble(change[2]));
 							disk.setCircularPath(new Circle(Double.parseDouble(change[3]), Double.parseDouble(change[4]), Double.parseDouble(change[5])));
 							disk.setTowardsCenter(Double.parseDouble(change[6]));
-							
+
 							disk.coord().setX(disk.circularPath().getCenterX() + (disk.circularPath().getRadius() * Math.cos(Math.toRadians(disk.degree()))));
 							disk.coord().setY(disk.circularPath().getCenterY() + (disk.circularPath().getRadius() * Math.sin(Math.toRadians(disk.degree()))));
 						}
@@ -128,6 +147,15 @@ public class Level {
 						}
 						else if(change[0].equals("lifeSpan")) {
 							disk.lifeSpan().setDur(Integer.parseInt(change[1]));
+
+						}
+						else if(change[0].equals("sineMotion")){
+							disk.setSineMotion(true);
+							disk.setAmplitude(Double.parseDouble(change[1]));
+							disk.setPeriod(Double.parseDouble(change[2]));
+						}
+						else if(change[0].equals("killRate")) {
+							disk.setKillRate(Double.parseDouble(change[1]));
 						}
 						else if(change[0].equals("safe")) {
 							disk.setSafe(true);
@@ -138,40 +166,58 @@ public class Level {
 							this.lasers()[this.laserSize()] = laser;
 							this.setLaserSize(this.laserSize() + 1);
 						}
+						else if(change[0].equals("acc")){
+							disk.acc().setX(Double.parseDouble(change[1]));
+							disk.acc().setY(Double.parseDouble(change[2]));
+						}
 						else if(change[0].equals("redirect")) {
 							disk.setRedirect(true);
 							break;
 						}
+
 						else {
 							break;
 						}
 					}
 					this.disks()[this.diskSize()] = disk;
 					this.setDiskSize(this.diskSize() + 1);
-					if(disk.redirect()) {
+					if(disk.redirect()) { // if its going to be redirected
 						disk.setRedirectIndex(this.redirectSize());
-						boolean loop = true;
-						while (loop) {
-							Disk redirected = new Disk(new Vector(0, 0), new Vector(0, 0), 0, 0, new Delay(0), false);
+						boolean loop = true; // this will check if the disk redirects again
+						while (loop) { 
+							Disk redirected = new Disk(disk.vec(), 0, 0, disk.finalRadius(), new Delay(0), false);
 							while((line = bufferedReader.readLine()) != null) {
 								String[] change = line.split("/");
 								if(change[0].equals("vec")) {
 									redirected.setVec(new Vector(Double.parseDouble(change[1]), Double.parseDouble(change[2])));
+									redirected.setCircularMotion(false);
 								}
-								else if(change[0].equals("maxSpeed")) {
-									redirected.setMaxSpeed(new Vector(Double.parseDouble(change[1]), Double.parseDouble(change[2])));
-								}
-								else if(change[0].equals("degreeChange")) {
-									redirected.setDegreeChange(Double.parseDouble(change[1]));
+								else if(change[0].equals("sineMotion")){
+									redirected.setAmplitude(Double.parseDouble(change[1]));
 								}
 								else if(change[0].equals("lifeSpan")) {
 									redirected.lifeSpan().setDur(Integer.parseInt(change[1]));
 								}
+								else if(change[0].equals("killRate")) {
+									redirected.setKillRate(Double.parseDouble(change[1]));
+								}
 								else if(change[0].equals("radiusChange")) {
-									redirected.setRadiusChange(Double.parseDouble(change[1]));
+									redirected.setFinalRadius(Double.parseDouble(change[1]));
+									redirected.setRadiusChange(Double.parseDouble(change[2]));
 								}
 								else if(change[0].equals("towardsCenter")) {
 									redirected.setTowardsCenter(Double.parseDouble(change[1]));
+								}
+								else if(change[0].equals("acc")){
+									redirected.acc().setX(Double.parseDouble(change[1]));
+									redirected.acc().setY(Double.parseDouble(change[2]));
+								}
+								else if(change[0].equals("circularMotion")){
+									redirected.setCircularMotion(true);
+									redirected.setDegree(0);
+									redirected.setDegreeChange(Double.parseDouble(change[1]));
+									redirected.setCircularPath(new Circle(Double.parseDouble(change[2]), Double.parseDouble(change[3]), 0));
+									redirected.setTowardsCenter(Double.parseDouble(change[4]));
 								}
 								else if(change[0].equals("redirect")) {
 									redirected.setRedirect(true);
@@ -181,28 +227,37 @@ public class Level {
 									break;
 								}
 							}
+							// this will find the direction the disk is heading in
+							if(redirected.vec().x() < 0) {
+								redirected.dir().setX(-1);
+							}
+							else if(redirected.vec().x() > 0) {
+								redirected.dir().setX(1);
+							}
+							if (redirected.vec().y() < 0) {
+								redirected.dir().setY(-1);
+							}
+							else if(redirected.vec().y() > 0) {
+								redirected.dir().setY(1);
+							}
+
 							loop = redirected.redirect();
 							if(loop) {
 								redirected.setRedirectIndex(this.redirectSize() + 1);
 							}
-							this.redirect()[this.redirectSize()] = redirected;
+							this.redirect()[this.redirectSize()] = redirected; // add it to the redirected array
 							this.setRedirectSize(this.redirectSize() + 1);
 						}
 					}
 				}
-				else if(object[0].equals("checkpoint")) {
-					Checkpoint checkpoint = new Checkpoint(Integer.parseInt(object[1]));
-					this.checkpoints()[this.checkpointSize()] = checkpoint;
-					this.setcheckpointSize(this.checkpointSize() + 1);
-				}
-				else if(object[0].equals("shake")) {
+				else if(object[0].equals("shake")) { // if the object is a shake
 					Shake shake = new Shake(Integer.parseInt(object[1]), new Delay(Integer.parseInt(object[2])), new Vector(Double.parseDouble(object[3]), Double.parseDouble(object[3])));
 					this.shakes()[this.shakeSize()] = shake;
 					this.setShakeSize(this.shakeSize() + 1);
 				}
 			}
 			bufferedReader.close();
-			Arrays.sort(lasers, new Comparator<Laser>() {
+			Arrays.sort(lasers, new Comparator<Laser>() { // sort all the lasers based on the frame they spawn
 
 				@Override
 				public int compare(Laser laser1, Laser laser2) {
@@ -215,7 +270,7 @@ public class Level {
 				}
 
 			});
-			Arrays.sort(disks, new Comparator<Disk>() {
+			Arrays.sort(disks, new Comparator<Disk>() { // sort all the disks based on the frame they spawn
 
 				@Override
 				public int compare(Disk disk1, Disk disk2) {
@@ -227,31 +282,22 @@ public class Level {
 					}
 				}
 			});
-			if(this.frames() != 0 && this.laserSize() != 0 && this.diskSize() != 0) {
-				for(int i = 0; i <= this.frames(); i++) {
-					if(i == this.lasers()[this.currentLaser()].spawn()) {
-						this.setCurrentLaser(this.currentLaser() + 1);
-						i--;
-					}
-					if(i == this.disks()[this.currentDisk()].spawn()) {
-						this.setCurrentDisk(this.currentDisk() + 1);
-						i--;
-					}
-				}
-			}
 		} 
 		catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * this will check for the amount of frames that passed and work according to that
+	 */
 	public void delayCheck() {
-		if(this.frames() == this.length() && Map.playLevel() != 4 && this.length() != 0) {
+		if(this.frames() == this.length() && Map.playLevel() != 4 && this.length() != 0) { // this will move onto the next level
 			Map.levels()[Map.playLevel()].clip().close();
 			Map.setPlayLevel(Map.playLevel() + 1);
 			Map.levels()[Map.playLevel()].clip().start();
 		}
-		if(this.currentLaser() < this.laserSize()) {
+		if(this.currentLaser() < this.laserSize()) { // this will check for which lasers must be added to the screen
 			for(int i = this.currentLaser(); i < this.laserSize(); i++) {
 				if(this.frames() == this.lasers()[i].spawn()) {
 					this.createLaser(this.lasers()[i]);
@@ -262,7 +308,7 @@ public class Level {
 				}
 			}
 		}
-		if(this.currentDisk() < this.diskSize()) {
+		if(this.currentDisk() < this.diskSize()) { // this will check for which disks must be added to the screen
 			for(int i = this.currentDisk(); i < this.diskSize(); i++) {
 				if(this.frames() == this.disks()[i].spawn()) {
 					this.createDisk(this.disks()[i]);
@@ -273,23 +319,7 @@ public class Level {
 				}
 			}
 		}
-		if(this.checkpointSize() != 0 && this.currentCheckpoint() != this.checkpointSize()) {
-			if(this.checkpoints()[this.currentCheckpoint()].frame() - 100 == this.frames()) {
-				this.checkpoints()[this.currentCheckpoint()].setMusicFrame(this.clip().getFramePosition());
-			}
-			if(this.checkpoints()[this.currentCheckpoint()].frame() == this.frames()) {
-				this.checkpoints()[this.currentCheckpoint()].setCurrentLaser(this.currentLaser());
-				this.checkpoints()[this.currentCheckpoint()].setCurrentDisk(this.currentDisk());
-				this.setCurrentCheckpoint(this.currentCheckpoint() + 1);
-				
-				for(int i = 0; i < Map.playerSize(); i++) {
-					if(!Map.players()[i].alive()) {
-						Map.players()[i].reborn();
-					}
-				}
-			}
-		}
-		if(this.shakeSize() != 0) {
+		if(this.shakeSize() != 0) { // this will check for which shakes must shake the screen
 			if(this.shakes()[this.currentShake()].spawn() == this.frames()) {
 				this.setShake(this.shakes()[this.currentShake()]);
 				if(this.currentShake() + 1 != this.shakeSize()) {
@@ -297,7 +327,8 @@ public class Level {
 				}
 			}
 		}
-		if(!this.shake().dur().delayCheck()) {
+		
+		if(!this.shake().dur().delayCheck()) { // this is used to shake the screen in four directions rather than ranodmly have it shake
 			if(this.shake().degree().x() > 0 && this.shake().degree().y() > 0) {
 				this.shake().degree().setX(-this.shake().degree().x());
 			}
@@ -311,12 +342,16 @@ public class Level {
 				this.shake().degree().setY(-this.shake().degree().y());
 			}
 		}
-		else {
-			this.shake().setDegree(new Vector(0, 0));
+		else { 
+			this.shake().setDegree(new Vector(0, 0)); // stop the screen from shaking
 		}
-		this.setFrames(this.frames() + 1);
+		this.setFrames(this.frames() + 1); // one frame has passed
 	}
 
+	/**
+	 * this will create the laser that will be added to the screen
+	 * @param laser
+	 */
 	public void createLaser(Laser laser) {
 		laser.setLaserIndex(Map.laserSize());
 		Map.lasers()[Map.laserSize()] = laser;
@@ -329,8 +364,12 @@ public class Level {
 		}
 	}
 
+	/**
+	 * this will create the disk that will be added to the screen
+	 * @param disk
+	 */
 	public void createDisk(Disk disk) {
-		if(!disk.safe()) {
+		if(!disk.safe()) { // if its a regular disk
 			disk.setDiskIndex(Map.diskSize());
 			Map.disks()[Map.diskSize()] = disk;
 			Map.setDiskSize(Map.diskSize() + 1);
@@ -341,7 +380,7 @@ public class Level {
 				Map.setGhostDiskSize(Map.ghostDiskSize() + 1);
 			}
 		}
-		else {
+		else { // if its a safe disk
 			disk.setCurrentRadius(disk.finalRadius());
 			disk.setSafeZone(new SafeZone(disk));
 			disk.setSafeDiskIndex(Map.safeDiskSize());
@@ -436,14 +475,6 @@ public class Level {
 		this.redirectSize = redirectSize;
 	}
 
-	public Checkpoint[] checkpoints() {
-		return checkpoints;
-	}
-
-	public void setCheckpoints(Checkpoint[] checkpoints) {
-		this.checkpoints = checkpoints;
-	}
-
 	public int currentCheckpoint() {
 		return currentCheckpoint;
 	}
@@ -451,7 +482,7 @@ public class Level {
 	public void setCurrentCheckpoint(int currentCheckpoint) {
 		this.currentCheckpoint = currentCheckpoint;
 	}
-	
+
 	public int checkpointSize() {
 		return checkpointSize;
 	}
@@ -471,11 +502,11 @@ public class Level {
 	public int shakeSize() {
 		return shakeSize;
 	}
-	
+
 	public void setShakeSize(int shakeSize) {
 		this.shakeSize = shakeSize;
 	}
-	
+
 	public int currentShake() {
 		return currentShake;
 	}

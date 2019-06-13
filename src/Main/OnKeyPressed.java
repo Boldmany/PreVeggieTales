@@ -8,38 +8,40 @@ import javafx.scene.input.KeyEvent;
 
 public class OnKeyPressed implements EventHandler<KeyEvent>{
 
+	/**
+	 * when you click a key
+	 */
 	public void handle(KeyEvent key) {
 		
-		if(Map.players()[0].alive()) {
-			if(key.getCode() == KeyCode.W && Map.players()[0].alive()) {
-				Map.players()[0].dir().setY(-1);
+		if(Map.players()[0].alive()) { // this is for player 1 / pineapple
+			if(key.getCode() == KeyCode.W) { // if w key is pressed
+				Map.players()[0].dir().setY(-1); // moving up
 			}
-			if(key.getCode() == KeyCode.S && Map.players()[0].alive()) {
-				Map.players()[0].dir().setY(1);
+			if(key.getCode() == KeyCode.S) { // if s key is pressed
+				Map.players()[0].dir().setY(1); // moving down
 			}
-			if(key.getCode() == KeyCode.D && Map.players()[0].alive()) {
-				Map.players()[0].dir().setX(1);
+			if(key.getCode() == KeyCode.D) { // if d key is pressed
+				Map.players()[0].dir().setX(1); // moving right
 			}
-			if(key.getCode() == KeyCode.A && Map.players()[0].alive()) {
-				Map.players()[0].dir().setX(-1);
+			if(key.getCode() == KeyCode.A) { // if a key is pressed
+				Map.players()[0].dir().setX(-1); // moving left
 			}
-			if(key.getCode() == KeyCode.SPACE && Map.players()[0].cooldown().done() && Map.players()[0].alive()) {
-				Map.players()[0].dash().setDone(false);
+			if(key.getCode() == KeyCode.SPACE && Map.players()[0].cooldown().done()) { // if key bar is pressed and cool down for dash is done
+				Map.players()[0].dash().setDone(false); // dash
 			}
 		}
 		
 		if(!Main.playing()) {
-			if(key.getCode() == KeyCode.BACK_SLASH) {
-				Main.setPlaying(true);
-				Map.levels()[0].clip().start();
-				
+			if(key.getCode() == KeyCode.BACK_SLASH) { // if back slash is clicked
+				Main.setPlaying(true); // start the game
 			}
-			if(key.getCode() == KeyCode.SHIFT && Map.playerSize() == 1) {
-				new Player(new Vector(600,300) , new Image("file:resources/apple.png"), new Image("file:resources/damaged.png"));
+			if(key.getCode() == KeyCode.SHIFT && Map.playerSize() == 1) { // if shift key is clicked
+				new Player(new Vector(600,300) , new Image("file:resources/apple.png"), new Image("file:resources/damagedApple.png")); // add player 2
 			}
 		}
 		
-		if(Map.playerSize() == 2) {
+		//just like player one, except using arrow keys
+		if(Map.playerSize() == 2) { 
 			if(Map.players()[1].alive()) {
 				if(key.getCode() == KeyCode.UP ) {
 					Map.players()[1].dir().setY(-1);
@@ -53,7 +55,7 @@ public class OnKeyPressed implements EventHandler<KeyEvent>{
 				if(key.getCode() == KeyCode.LEFT) {
 					Map.players()[1].dir().setX(-1);
 				}
-				if(key.getCode() == KeyCode.SHIFT && Map.players()[0].cooldown().done()) {
+				if(key.getCode() == KeyCode.SHIFT && Map.players()[1].cooldown().done()) {
 					Map.players()[1].dash().setDone(false);
 				}
 			}

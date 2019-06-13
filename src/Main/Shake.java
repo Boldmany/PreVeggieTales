@@ -6,6 +6,12 @@ public class Shake {
 	private Delay dur;
 	private Vector degree;
 	
+	/**
+	 * this will set a shake in the game
+	 * @param spawn the frame it will spawn at
+	 * @param dur how long it will last
+	 * @param degree and how much the screen will shake
+	 */
 	public Shake (int spawn, Delay dur, Vector degree) {
 		this.setSpawn(spawn);
 		this.setDur(dur);

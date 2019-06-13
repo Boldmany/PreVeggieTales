@@ -14,6 +14,7 @@ If "checkpoint"
 
 If "shake"
 	int the frame it will start shaking
+	int how long it lasts
 	double the degree of the shake	
 
 If "laser"
@@ -48,18 +49,22 @@ If "disk"
 	"coord"
 	double x coordiante
 	double y coordinate
+
+	"finalRadius"
+	double final radius
+	double how much the radius should increase every frame(set this to 0 if you want it to be the same instantly)
 	
 	"vec"
 	double x velocity
 	double y velocity
 
-	"maxSpeed"
-	double max speed in the x direction
-	double max speed in the y direction
+	"sineMotion"
+	double the amplitude
+	double the period
 
-	"finalRadius"
-	double final radius
-	double how much the radius should increase every frame(set this to 0 if you want it to be the same instantly)
+	"acc"
+	double x acceleratiosns (can also be used for acceleration of circularmotion)
+	double y acceleratiosns 
 	
 	"circularMotion"
 	double the degree in the circle you start at
@@ -74,6 +79,10 @@ If "disk"
 
 	"lifeSpan"
 	int how long the disk should last
+	
+	"killRate"
+	double how fast it dies (automatically sets it to -1.4 if left empty)
+	
 
 	"safe"(this will automatically set it to true)
 
@@ -86,22 +95,30 @@ If "disk"
 		double x velocity
 		double y velocity
 
-		"maxSpeed"
-		double max speed in the x direction
-		double max speed in the y direction
-
-		"degreeChange"
-		double the amount of degrees you change every frame
+		"sineMotion"
+		double the amplitude
+		double the period
 
 		"lifeSpan"
 		int how long the disk should last
+		double the period (2/period * pi)
+
+		"acc"
+		double x acceleratiosns (used for acceleration of circular motion too)
+		double y acceleratiosns 
+	
+		"killRate"
+		double how fast it dies (automatically sets it to -1.4 if left empty)
 
 		"radiusChange"
+		double final radius
 		double how much the radius will change every frame
-		
-		"towardsCenter"
-		double how much you decrease the radius of the circular path
-		by every frame
+
+		"circularMotion"
+		double the amount of degrees you change every frame
+		double x coordinate of the circular path
+		double y coordinate of the circular path
+		double how much you decrease the radius by every frame 	
 
 		"redirect"(this will automatically set it to true, recursion)
 			

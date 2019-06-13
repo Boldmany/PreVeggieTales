@@ -22,26 +22,30 @@ public class Main extends Application{
 		launch(args);
 	}
 
+	/**
+	 * making the stage / screen
+	 */
 	public void start(Stage window) throws Exception {
 		try {
-			
+
 			group.getChildren().add(canvas);
 		
 			Scene scene = new Scene(group);
 			
-			scene.setOnKeyPressed(new OnKeyPressed());
-			scene.setOnKeyReleased(new OnKeyReleased());
+			scene.setOnKeyPressed(new OnKeyPressed()); // input once clicked
+			scene.setOnKeyReleased(new OnKeyReleased()); // input once relaesed
 			
 			window.setScene(scene);
 			window.setTitle("PreVeggieTales");
 			window.show();
 			
+			
 			Timeline gameLoop = new Timeline();
 		    gameLoop.setCycleCount(Timeline.INDEFINITE);
-		    double interval = (double) (Math.round(((double) 1 / 60) * 1000000)) / 1000;
+		    double interval = (double) (Math.round(((double) 1 / 60) * 1000000)) / 1000; // run 60 times a second
 		    KeyFrame keyframe = new KeyFrame(Duration.millis(interval), new GameLoop());
 		    gameLoop.getKeyFrames().add(keyframe);
-		    gameLoop.play();
+		    gameLoop.play(); // run the game
 		}
 		catch (Exception e) {
 			e.printStackTrace();

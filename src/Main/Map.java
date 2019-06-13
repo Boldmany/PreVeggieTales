@@ -6,25 +6,25 @@ import MapObjects.Laser;
 
 public class Map {
 	
-	private static Player[] players = new Player[2];
+	private static Player[] players = new Player[2]; // array of players on screen
 	private static int playerSize = 0;
 	
-	private static Laser[] lasers = new Laser[3000];
-	private static Laser[] ghostLasers = new Laser[3000] ;
+	private static Laser[] lasers = new Laser[3000]; // array of lasers on screen
+	private static Laser[] ghostLasers = new Laser[3000]; // array of laser warnings on screen
 	private static int laserSize = 0;
 	private static int ghostLaserSize = 0;
 	
-	private static Disk[] disks = new Disk[3000];
-	private static Disk[] ghostDisks = new Disk[3000] ;
+	private static Disk[] disks = new Disk[3000]; // array of disks on screen
+	private static Disk[] ghostDisks = new Disk[3000]; // array of disk warnings on screen
 	private static int diskSize = 0;
 	private static int ghostDiskSize = 0;
 	
-	private static Disk[] safeDisks = new Disk[3000];
+	private static Disk[] safeDisks = new Disk[3000]; // array of safe disks on screen
 	private static int safeDiskSize = 0;
 	
-	private static Level[] levels = {new Level(1), new Level(2), new Level(3), new Level(4), new Level(5)};
-	private static int playLevel = 0;
-			
+	private static Level[] levels = {new Level(1), new Level(2), new Level(3), new Level(4), new Level(5)}; // the amount of levels
+	private static int playLevel = 2; // the current level
+			 
 	public static int ghostLaserSize() {
 		return ghostLaserSize;
 	}
