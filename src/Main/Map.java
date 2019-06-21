@@ -22,8 +22,8 @@ public class Map {
 	private static Disk[] safeDisks = new Disk[3000]; // array of safe disks on screen
 	private static int safeDiskSize = 0;
 	
-	private static Level[] levels = {new Level(1), new Level(2), new Level(3), new Level(4), new Level(5)}; // the amount of levels
-	private static int playLevel = 2; // the current level
+	private static Level[] levels = {new Level(1), new Level(2), new Level(3)}; // the amount of levels
+	private static int playLevel = 0; // the current level
 			 
 	public static int ghostLaserSize() {
 		return ghostLaserSize;

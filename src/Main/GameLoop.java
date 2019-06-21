@@ -14,26 +14,34 @@ public class GameLoop implements EventHandler<ActionEvent> {
 	private static Color pink = Color.rgb(252,31,109); // this is the color used for the objects that deal damage
 	private static Color warning = Color.rgb(93,35,71); // this is the color used for the warnings 
 	public Player pineapple = new Player(new Vector(500,300) , new Image("file:resources/pineapple.png"), new Image("file:resources/damagedPineapple.png")); // this instantiates the pineapple
+	public Image victory = new Image("file:resources/winscreen.png");
+	public Image death = new Image("file:resources/death.png");
 
 	/**
 	 * this will run 60 times a second
 	 */
 	public void handle(ActionEvent ev) {
+		
+		if(Map.levels()[Map.playLevel()].frames() == 4150) { // if you reach 4150 frames
+			Map.setDiskSize(0); // remove all disks
+		}
+		
 		Main.gc().clearRect(0, 0, Main.canvas().getWidth(), Main.canvas().getHeight()); // clear the canvas
 
-		if(!Main.playing()) { // this is the menu screen
+		if(Main.gameState() == 0) { // this is the menu screen
 			Main.gc().setFill(Color.BLACK);
 			Main.gc().setFont(new Font(20));
 			Main.gc().fillText("First player use WASD to move around and space bar to dash. \n \n"
 					+ "Click the shift button to play 2 players. \n"
 					+ (Map.playerSize() == 1 ? "\n" : "Second player use the arrow keys to move around and shift key to dash. \n \n")
-					+ "You have 7 lives. \n"
+					+ "Dashing gives you invincibility frames during and after the dash \n"
+					+ "You have 15 lives. They will be displayed on the top corners of the screen (rgiht side pineapple, left side is apple) \n"
 					+ "The next Level will autimatically start once you win. \n"
 					+ "Dodge all the pink objects and get to the end of the song to win.", 10, 30);
 			Main.gc().setFont(new Font(40));
 			Main.gc().fillText("Click the \"\\\" to start", 10, 630);
 		}
-		else {
+		else if (Main.gameState() == 1){
 			Map.levels()[Map.playLevel()].delayCheck(); // this will run the delay check for the level
 
 			if(Map.levels()[Map.playLevel()].frames() == 0) { // if the frame counter reaches 0
@@ -121,6 +129,12 @@ public class GameLoop implements EventHandler<ActionEvent> {
 					i --;
 				}
 			}
+		}
+		else if(Main.gameState() == 2){
+			Main.gc().drawImage(victory, 0, 0); // victory screen
+		}
+		else {
+			Main.gc().drawImage(death, 0, 0); // death screen
 		}
 		for(int i = 0; i < Map.playerSize(); i++) { // this will draw the characters at an angle based on how they are moving 
 			if(Map.players()[i].alive()) {

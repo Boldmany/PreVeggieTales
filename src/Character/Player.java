@@ -1,9 +1,8 @@
 package Character;
 
-import java.util.Arrays;
-
 import Main.Collision;
 import Main.Delay;
+import Main.Main;
 import Main.Map;
 import Main.Vector;
 import javafx.scene.image.Image;
@@ -25,6 +24,7 @@ public class Player {
 	private Delay cooldown = new Delay(20); 
 	private Delay notDamaged = new Delay(60);
 	private int lives = 15;
+	private final static int MAX_LIVES = 15;
 	private double speed;
 	private boolean alive = true;
 
@@ -125,7 +125,8 @@ public class Player {
 				}
 
 				if(death) { // if death
-					death(); // die
+					Main.setGameState(3); // die
+					Map.levels()[Map.playLevel()].clip().stop();
 				}
 			} 
 			else { // if your are still alive, then set all the things needed for when you take damage
@@ -201,7 +202,7 @@ public class Player {
 		//the next few lines will reset all the character stats
 		for(int i = 0; i < Map.playerSize(); i++) {
 			Map.players()[i].setAlive(true);
-			Map.players()[i].setLives(7);
+			Map.players()[i].setLives(Player.MAX_LIVES());
 			Map.players()[i].setImg(Map.players()[i].normal());
 			Map.players()[i].notDamaged().setDone(true);
 			Map.players()[i].dash().setDone(true);
@@ -215,29 +216,17 @@ public class Player {
 			}
 		}
 
-		//the next few lines will clear all the arrays and everything off the screen
-		Arrays.fill(Map.disks(), null);
-		Arrays.fill(Map.lasers(), null);
-		Arrays.fill(Map.ghostDisks(), null);
-		Arrays.fill(Map.ghostLasers(), null);
-		Arrays.fill(Map.safeDisks(), null);
-		Map.setDiskSize(0);
-		Map.setLaserSize(0);
-		Map.setGhostDiskSize(0);
-		Map.setGhostLaserSize(0);
-		Map.setSafeDiskSize(0);
-
+		Map.levels()[Map.playLevel()].clear();
+		
 		// the next few lines will reset the level content and stop the music
 		Map.levels()[Map.playLevel()].setShakeSize(0);
 		Map.levels()[Map.playLevel()].setDiskSize(0);
 		Map.levels()[Map.playLevel()].setLaserSize(0);
-
-
+		Map.levels()[Map.playLevel()].setDoneLevel(false);
 		Map.levels()[Map.playLevel()].setFrames(-100);
 		Map.levels()[Map.playLevel()].setCurrentDisk(0);
 		Map.levels()[Map.playLevel()].setCurrentLaser(0);
 		Map.levels()[Map.playLevel()].setCurrentShake(0);
-		Map.levels()[Map.playLevel()].clip().stop();
 
 
 		Map.levels()[Map.playLevel()].levelReader("resources/levels/level" + (Map.playLevel() + 1) + "/levelEditor.txt");
@@ -361,5 +350,9 @@ public class Player {
 
 	public void setAlive(boolean alive) {
 		this.alive = alive;
+	}
+
+	public static int MAX_LIVES() {
+		return MAX_LIVES;
 	}
 }

@@ -14,6 +14,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import Character.Player;
 import MapObjects.*;
 import javafx.scene.shape.Circle;
 
@@ -36,6 +37,7 @@ public class Level {
 	private int currentShake = 0;
 	private int shakeSize = 0;
 	private int length = 0;
+	private boolean doneLevel = false;
 
 	/**
 	 * this is going to create a level by reading a file and inputing the song
@@ -257,6 +259,21 @@ public class Level {
 				}
 			}
 			bufferedReader.close();
+
+			Arrays.sort(shakes, new Comparator<Shake>() { // sort all the shakes based on the frame they spawn
+
+				@Override
+				public int compare(Shake shake1, Shake shake2) {
+					if(!Objects.isNull(shake1) && !Objects.isNull(shake2)) {
+						return shake1.spawn() - shake2.spawn();
+					}
+					else {
+						return 0;
+					}
+				}
+
+			});
+
 			Arrays.sort(lasers, new Comparator<Laser>() { // sort all the lasers based on the frame they spawn
 
 				@Override
@@ -289,13 +306,40 @@ public class Level {
 	}
 
 	/**
+	 * this is going to clear the screen from all the objects
+	 */
+	public void clear() {
+		//the next few lines will clear all the arrays and everything off the screen
+		Arrays.fill(Map.disks(), null);
+		Arrays.fill(Map.lasers(), null);
+		Arrays.fill(Map.ghostDisks(), null);
+		Arrays.fill(Map.ghostLasers(), null);
+		Arrays.fill(Map.safeDisks(), null);
+		Map.setDiskSize(0);
+		Map.setLaserSize(0);
+		Map.setGhostDiskSize(0);
+		Map.setGhostLaserSize(0);
+		Map.setSafeDiskSize(0);
+	}
+
+	/**
 	 * this will check for the amount of frames that passed and work according to that
 	 */
 	public void delayCheck() {
-		if(this.frames() == this.length() && Map.playLevel() != 4 && this.length() != 0) { // this will move onto the next level
+		if(this.frames() == this.length()) {  // once the level has finished running
+			this.setDoneLevel(true);
+		}
+		if(this.doneLevel() && this.length() != 0 && Map.diskSize() == 0 && Map.laserSize() == 0 && Map.safeDiskSize() == 0) { // this will move onto the next level when everything is clear
 			Map.levels()[Map.playLevel()].clip().close();
 			Map.setPlayLevel(Map.playLevel() + 1);
-			Map.levels()[Map.playLevel()].clip().start();
+			Map.players()[0].setLives(Player.MAX_LIVES());
+			if(Map.playerSize() == 2) {
+				Map.players()[1].setLives(Player.MAX_LIVES());
+			}
+			if(Map.playLevel() == 3) { // if the player wins
+				Main.setGameState(2);
+				Map.setPlayLevel(Map.playLevel() - 1);
+			}
 		}
 		if(this.currentLaser() < this.laserSize()) { // this will check for which lasers must be added to the screen
 			for(int i = this.currentLaser(); i < this.laserSize(); i++) {
@@ -320,14 +364,19 @@ public class Level {
 			}
 		}
 		if(this.shakeSize() != 0) { // this will check for which shakes must shake the screen
-			if(this.shakes()[this.currentShake()].spawn() == this.frames()) {
-				this.setShake(this.shakes()[this.currentShake()]);
-				if(this.currentShake() + 1 != this.shakeSize()) {
-					this.setCurrentShake(this.currentShake() + 1);
+			for(int i = this.currentShake(); i < this.shakeSize(); i++) {
+				if(this.shakes()[i].spawn() == this.frames()) {
+					this.setShake(this.shakes()[i]);
+					if(this.currentShake() + 1 != this.shakeSize()) {
+						this.setCurrentShake(this.currentShake() + 1);
+					}
+				}
+				else {
+					break;
 				}
 			}
 		}
-		
+
 		if(!this.shake().dur().delayCheck()) { // this is used to shake the screen in four directions rather than ranodmly have it shake
 			if(this.shake().degree().x() > 0 && this.shake().degree().y() > 0) {
 				this.shake().degree().setX(-this.shake().degree().x());
@@ -529,5 +578,13 @@ public class Level {
 
 	public void setLength(int length) {
 		this.length = length;
+	}
+
+	public boolean doneLevel() {
+		return doneLevel;
+	}
+
+	public void setDoneLevel(boolean doneLevel) {
+		this.doneLevel = doneLevel;
 	}
 }

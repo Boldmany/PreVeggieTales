@@ -31,11 +31,14 @@ public class OnKeyPressed implements EventHandler<KeyEvent>{
 			}
 		}
 		
-		if(!Main.playing()) {
+		if(Main.gameState() == 0 || Main.gameState() == 3) {
 			if(key.getCode() == KeyCode.BACK_SLASH) { // if back slash is clicked
-				Main.setPlaying(true); // start the game
+				if(Main.gameState() == 3) {
+					Player.death();
+				}
+				Main.setGameState(1); // start the game
 			}
-			if(key.getCode() == KeyCode.SHIFT && Map.playerSize() == 1) { // if shift key is clicked
+			if(key.getCode() == KeyCode.SHIFT && Map.playerSize() == 1 && Main.gameState() == 0) { // if shift key is clicked
 				new Player(new Vector(600,300) , new Image("file:resources/apple.png"), new Image("file:resources/damagedApple.png")); // add player 2
 			}
 		}

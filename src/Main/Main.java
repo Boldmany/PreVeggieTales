@@ -10,13 +10,15 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-
+//Yonatan and Andrej
+// June 14 2019
+// This is a video game where you dodge the pink stuff
 public class Main extends Application{
 	
 	private static Canvas canvas = new Canvas(1000, 650);
 	private static GraphicsContext gc = canvas.getGraphicsContext2D();
 	private static Group group = new Group();
-	private static boolean playing = false;
+	private static int gameState = 0;
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -33,7 +35,7 @@ public class Main extends Application{
 			Scene scene = new Scene(group);
 			
 			scene.setOnKeyPressed(new OnKeyPressed()); // input once clicked
-			scene.setOnKeyReleased(new OnKeyReleased()); // input once relaesed
+			scene.setOnKeyReleased(new OnKeyReleased()); // input once released
 			
 			window.setScene(scene);
 			window.setTitle("PreVeggieTales");
@@ -76,11 +78,11 @@ public class Main extends Application{
 		Main.group = group;
 	}
 
-	public static boolean playing() {
-		return playing;
+	public static int gameState() {
+		return gameState;
 	}
 
-	public static void setPlaying(boolean playing) {
-		Main.playing = playing;
+	public static void setGameState(int gameState) {
+		Main.gameState = gameState;
 	}
 }
